@@ -1,478 +1,412 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MSEmail Pro — Microsoft Email Generator</title>
+What do you think f my projects
 
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
---bg:#F8F7F4;--surface:#FFFFFF;--card:#FFFFFF;--border:#E8E3D8;
---accent:#B8942A;--accent-soft:#FDF6E3;--accent-glow:rgba(184,148,42,0.12);
---text:#1A1612;--muted:#8A7E6A;--success:#2D8A5E;--danger:#C0392B;
---gold:#B8942A;--gold-light:#F0D98C;--gold-dark:#8A6E1A;
---mono:'Courier New',Courier,monospace;--sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;
-}
-html,body{height:100%}
-body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-.wrap{position:relative;z-index:1;max-width:1020px;margin:0 auto;padding:0 24px 80px}
-header{padding:44px 0 36px;border-bottom:2px solid var(--border);margin-bottom:40px;display:flex;align-items:center;justify-content:space-between}
-.logo{display:flex;align-items:center;gap:12px}
-.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#B8942A,#E6C84A);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 4px 16px rgba(184,148,42,0.3)}
-.logo-text{font-size:19px;font-weight:700;letter-spacing:-0.3px;color:var(--text)}
-.logo-text span{color:var(--gold)}
-.badge{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--gold-dark);background:var(--accent-soft);border:1px solid var(--gold-light);padding:4px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase}
-h1{font-size:40px;font-weight:700;line-height:1.12;letter-spacing:-1.2px;margin-bottom:10px;color:var(--text)}
-h1 em{font-style:normal;background:linear-gradient(90deg,#B8942A,#E6C84A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.subtitle{color:var(--muted);font-size:15px;line-height:1.65;margin-bottom:36px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
-.card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:24px;transition:border-color 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
-.card:hover{border-color:var(--gold-light)}
-.card.full{grid-column:1/-1}
-.clabel{font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.clabel::before{content:'';width:3px;height:12px;background:linear-gradient(180deg,#B8942A,#E6C84A);border-radius:2px;display:inline-block}
-textarea{width:100%;background:#FAFAF8;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:12px;line-height:1.7;padding:14px;resize:vertical;outline:none;transition:border-color 0.2s,box-shadow 0.2s;min-height:190px}
-textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--accent-glow)}
-textarea::placeholder{color:#C4B89A}
-input[type=number]{width:150px;background:#FAFAF8;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:15px;font-weight:500;padding:10px 14px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;-moz-appearance:textfield}
-input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
-input[type=number]:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--accent-glow)}
-.hint{font-size:12px;color:var(--muted);margin-top:5px}
-.countries-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:4px}
-.country-chip{display:flex;align-items:center;gap:8px;background:#FAFAF8;border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;cursor:pointer;transition:all 0.15s;user-select:none}
-.country-chip:hover{border-color:var(--gold);background:var(--accent-soft)}
-.country-chip.active{border-color:var(--gold);background:var(--accent-soft)}
-.country-chip input[type=checkbox]{display:none}
-.ck{width:15px;height:15px;border:1.5px solid var(--border);border-radius:4px;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s}
-.country-chip.active .ck{background:linear-gradient(135deg,#B8942A,#E6C84A);border-color:var(--gold)}
-.ck svg{display:none}
-.country-chip.active .ck svg{display:block}
-.cflag{font-size:16px;line-height:1}
-.cname{font-size:12px;font-weight:500;color:var(--text)}
-.domains-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px}
-.domain-chip{display:flex;align-items:center;gap:8px;background:#FAFAF8;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;transition:all 0.15s;user-select:none}
-.domain-chip:hover{border-color:var(--gold);background:var(--accent-soft)}
-.domain-chip.active{border-color:var(--gold);background:var(--accent-soft)}
-.domain-chip input[type=checkbox]{display:none}
-.dname{font-family:var(--mono);font-size:11.5px;color:var(--text)}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;letter-spacing:0.1px;white-space:nowrap}
-.btn-primary{background:linear-gradient(135deg,#B8942A,#D4AA3A);color:#fff;box-shadow:0 4px 16px rgba(184,148,42,0.35)}
-.btn-primary:hover{background:linear-gradient(135deg,#C8A030,#E6C84A);box-shadow:0 6px 24px rgba(184,148,42,0.45);transform:translateY(-1px)}
-.btn-primary:active{transform:translateY(0)}
-.btn-secondary{background:var(--card);color:var(--text);border:1.5px solid var(--border)}
-.btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
-.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);padding:8px 16px;font-size:12px}
-.btn-ghost:hover{color:var(--gold);border-color:var(--gold-light)}
-.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
-.stat-box{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,0.05)}
-.stat-v{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--text);line-height:1;margin-bottom:4px}
-.stat-v.gold{color:var(--gold)}
-.stat-v.green{color:var(--success)}
-.stat-l{font-size:11px;color:var(--muted)}
-.controls-row{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
-.progress-wrap{width:100%;height:4px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:16px;display:none}
-.progress-bar{height:100%;background:linear-gradient(90deg,#B8942A,#E6C84A);border-radius:4px;width:0%;transition:width 0.08s linear}
-#outputArea{min-height:280px;font-size:11.5px;line-height:1.9;color:#5A4A1A;background:#FFFDF5}
-.row-between{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.acts{display:flex;gap:8px}
-.sr{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-.tag{font-size:11px;color:var(--muted);font-family:var(--mono)}
-.mode-box{background:#FAFAF8;border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-top:14px}
-.mode-box label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:3px 0;color:var(--text)}
-.qrow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
-.toast{position:fixed;bottom:28px;right:28px;background:var(--card);border:1.5px solid var(--border);border-left:3px solid var(--success);padding:13px 20px;border-radius:10px;font-size:13px;color:var(--text);z-index:100;transform:translateY(20px);opacity:0;transition:all 0.3s ease;pointer-events:none;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
-.toast.show{transform:translateY(0);opacity:1}
-.dist-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.dist-pill{font-family:var(--mono);font-size:10px;color:var(--gold-dark);background:var(--accent-soft);border:1px solid var(--gold-light);border-radius:20px;padding:3px 10px}
-.gold-divider{height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-light),transparent);border-radius:2px;margin-bottom:40px}
-@media(max-width:700px){.grid2{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr 1fr}h1{font-size:26px}header{flex-direction:column;align-items:flex-start;gap:14px}.stats-row .stat-box:last-child{grid-column:1/-1}}
-</style>
-</head>
-<body>
-<div class="wrap">
-
-<header>
-  <div class="logo">
-    <div class="logo-icon">✉</div>
-    <div class="logo-text">MS<span>Email</span> Pro</div>
-  </div>
-  <div class="badge">v3.0 — Country Engine</div>
-</header>
-
-<div class="gold-divider"></div>
-
-<h1>Generate <em>Microsoft</em><br>Email Addresses</h1>
-<p class="subtitle">Country-aware name engine · 9 nations · 14 Microsoft domains · Up to 100K emails per run<br>Paste real seeds to train patterns or use Auto mode — download ready for ZeroBounce.</p>
-
-<div class="grid2">
-  <div class="card">
-    <div class="clabel">Seed Emails — Paste Real List</div>
-    <textarea id="seedInput" placeholder="Paste your real emails here, one per line&#10;&#10;greenrainforest@msn.com&#10;skullnzilla@msn.com&#10;captain1971@hotmail.com&#10;diane_weinstein@msn.com"></textarea>
-    <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
-      <span class="tag" id="seedCount">0 emails detected</span>
-      <button class="btn btn-ghost" onclick="analyzeSeed()">Analyze Patterns</button>
-    </div>
-    <div id="analysisPanel" style="display:none;margin-top:14px;background:#FAFAF8;border:1.5px solid var(--gold-light);border-radius:10px;padding:14px">
-      <div style="font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gold-dark);margin-bottom:10px">Seed Analysis Results</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
-        <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px">
-          <div style="font-family:var(--mono);font-size:20px;font-weight:600;color:var(--gold)" id="aAvgLen">—</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:3px">Avg username length</div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px">
-          <div style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--gold);line-height:1.5" id="aYearRange">—</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:3px">Common suffix years</div>
-        </div>
-        <div style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px">
-          <div style="font-family:var(--mono);font-size:12px;font-weight:600;color:var(--gold);line-height:1.6" id="aSepFreq">—</div>
-          <div style="font-size:10px;color:var(--muted);margin-top:3px">Separator frequency</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="clabel">Generation Settings</div>
-    <div style="margin-bottom:14px">
-      <div class="hint" style="margin-bottom:7px">Number of emails to generate</div>
-      <input type="number" id="countInput" value="1000" min="10" max="100000">
-      <div class="hint">Min: 10 · Max: 100,000</div>
-    </div>
-    <div class="hint" style="margin-bottom:7px">Quick amounts</div>
-    <div class="qrow">
-      <button class="btn btn-ghost" onclick="setCount(500)">500</button>
-      <button class="btn btn-ghost" onclick="setCount(1000)">1K</button>
-      <button class="btn btn-ghost" onclick="setCount(5000)">5K</button>
-      <button class="btn btn-ghost" onclick="setCount(10000)">10K</button>
-      <button class="btn btn-ghost" onclick="setCount(50000)">50K</button>
-      <button class="btn btn-ghost" onclick="setCount(100000)">100K</button>
-    </div>
-    <div class="mode-box">
-      <div class="hint" style="margin-bottom:8px">Pattern mode</div>
-      <label><input type="radio" name="mode" value="learned" checked style="accent-color:var(--gold)"> Learn from seed emails</label>
-      <label style="margin-top:4px"><input type="radio" name="mode" value="auto" style="accent-color:var(--gold)"> Auto (no seed needed)</label>
-    </div>
-  </div>
-</div>
-
-<div class="card full" style="margin-bottom:20px">
-  <div class="clabel">Country Engine — Select Target Countries</div>
-  <p class="hint" style="margin-bottom:12px">Names, styles and patterns are specific to each country's real naming conventions</p>
-  <div class="sr">
-    <button class="btn btn-ghost" onclick="selectAllCountries()">Select All</button>
-    <button class="btn btn-ghost" onclick="clearAllCountries()">Clear All</button>
-  </div>
-  <div class="countries-grid" id="countriesGrid"></div>
-  <div class="dist-row" id="distRow"></div>
-</div>
-
-<div class="card full" style="margin-bottom:20px">
-  <div class="clabel">Microsoft Domains — Select Active</div>
-  <div class="sr">
-    <button class="btn btn-ghost" onclick="selectAllDomains()">Select All</button>
-    <button class="btn btn-ghost" onclick="clearAllDomains()">Clear All</button>
-  </div>
-  <div class="domains-grid" id="domainsGrid"></div>
-</div>
-
-<div class="stats-row">
-  <div class="stat-box"><div class="stat-v gold" id="stSeed">0</div><div class="stat-l">Seed Emails</div></div>
-  <div class="stat-box"><div class="stat-v" id="stPatterns">0</div><div class="stat-l">Patterns Found</div></div>
-  <div class="stat-box"><div class="stat-v gold" id="stCountries">9</div><div class="stat-l">Countries Active</div></div>
-  <div class="stat-box"><div class="stat-v" id="stDomains">14</div><div class="stat-l">Domains Active</div></div>
-  <div class="stat-box"><div class="stat-v green" id="stGenerated">0</div><div class="stat-l">Generated</div></div>
-</div>
-
-<div class="controls-row">
-  <button class="btn btn-primary" id="generateBtn" onclick="startGeneration()">
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1v13M1 7.5h13" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-    Generate Emails
-  </button>
-  <button class="btn btn-secondary" id="downloadBtn" onclick="downloadOutput()" disabled>
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M1 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Download .txt
-  </button>
-  <button class="btn btn-secondary" onclick="clearOutput()">Clear</button>
-</div>
-
-<div class="progress-wrap" id="progressWrap">
-  <div class="progress-bar" id="progressBar"></div>
-</div>
-
-<div class="card full">
-  <div class="row-between">
-    <div class="clabel" style="margin-bottom:0">Output — Generated Emails</div>
-    <div class="acts">
-      <button class="btn btn-ghost" onclick="copyOutput()">Copy All</button>
-    </div>
-  </div>
-  <textarea id="outputArea" readonly placeholder="Generated emails will appear here...&#10;&#10;Select countries, pick domains, set your count and hit Generate."></textarea>
-</div>
-
-</div>
-<div class="toast" id="toast"></div>
-
-<script>
-const DOMAINS = [
-  '@msn.com','@hotmail.co.uk','@live.co.uk','@hotmail.ca',
-  '@live.ca','@live.fr','@hotmail.fr','@live.de',
-  '@hotmail.de','@hotmail.it','@hotmail.es','@outlook.com',
-  '@hotmail.com','@live.com'
-];
-
-const COUNTRIES = {
-  us:{flag:'🇺🇸',name:'USA',first:['james','john','robert','michael','william','david','richard','joseph','thomas','charles','christopher','daniel','matthew','anthony','mark','donald','steven','paul','andrew','joshua','kenneth','kevin','brian','george','timothy','ronald','edward','jason','jeffrey','ryan','jacob','gary','nicholas','eric','jonathan','stephen','larry','justin','scott','brandon','benjamin','samuel','raymond','frank','gregory','alexander','patrick','jack','dennis','jerry','tyler','aaron','jose','adam','henry','nathan','douglas','zachary','peter','kyle','noah','ethan','jeremy','walter','christian','keith','roger','terry','austin','sean','gerald','carl','harold','dylan','arthur','lawrence','jordan','jesse','bryan','billy','joe','bruce','albert','willie','gabriel','logan','alan','juan','wayne','roy','ralph','randy','eugene','vincent','russell','elijah','louis','philip','bobby','johnny'],last:['smith','johnson','williams','brown','jones','garcia','miller','davis','martinez','wilson','anderson','taylor','thomas','hernandez','moore','martin','jackson','thompson','white','lopez','lee','gonzalez','harris','clark','lewis','robinson','walker','perez','hall','young','allen','sanchez','wright','king','scott','green','baker','adams','nelson','hill','ramirez','campbell','mitchell','roberts','carter','phillips','evans','turner','torres','parker','collins','edwards','stewart','flores','morris','nguyen','murphy','rivera','cook','rogers','morgan','peterson','cooper','reed','bailey','bell','gomez','kelly','howard','ward','cox','diaz','richardson','wood','watson','brooks','bennett','gray','james','reyes','hughes','price','myers','long','foster','sanders','ross','morales','powell','sullivan','russell','ortiz','jenkins','gutierrez','perry','butler','barnes','fisher'],styles:['nickname','name_num','word_combo','name_sep','init_num','creative']},
-  ca:{flag:'🇨🇦',name:'Canada',first:['liam','noah','oliver','elijah','james','william','benjamin','lucas','henry','alexander','mason','ethan','daniel','jacob','logan','jackson','sebastian','jack','aiden','owen','samuel','ryan','nathan','christian','caleb','matthew','emma','olivia','ava','sophia','isabella','mia','charlotte','amelia','harper','evelyn','abigail','emily','elizabeth','mila','ella','avery','sofia','camila','aria','scarlett','victoria','madison','luna','grace','chloe','penelope','layla','riley','zoey','nora','lily','eleanor','hannah','lillian','addison','aubrey','ellie','stella','natalie','zoe','leah','hazel','violet','aurora','savannah','audrey','brooklyn','bella','claire','skylar','lucy','paisley','everly','anna','caroline','nova','genesis','emilia','kennedy'],last:['tremblay','gagnon','roy','cote','bouchard','gauthier','morin','lavoie','fortin','girard','gagne','ouellet','pelletier','bergeron','leblanc','lefebvre','paquette','leclerc','belanger','lachance','lapointe','hebert','beaulieu','dupont','rioux','smith','johnson','brown','wilson','martin','anderson','thompson','taylor','harris','clark','lewis','robinson','walker','hall','young','allen','king','scott','green','baker','adams','nelson','hill','campbell','mitchell','roberts','carter','phillips','evans','turner','parker','collins','edwards','stewart','murphy','rogers','morgan','peterson','cooper','reed','bailey','bell','kelly','howard','ward','cox','wood','watson','brooks','bennett','gray','price','myers','long','foster','sanders','ross'],styles:['name_sep','name_num','init_num','creative','nickname']},
-  uk:{flag:'🇬🇧',name:'UK',first:['oliver','george','harry','jack','noah','charlie','jacob','alfie','freddie','oscar','james','william','thomas','henry','leo','archie','ethan','joshua','joseph','sebastian','samuel','arthur','max','alexander','lucas','mason','liam','isaac','muhammed','daniel','logan','ryan','matthew','lewis','benjamin','adam','harrison','finley','evan','callum','jake','luke','edward','poppy','olivia','emily','isla','ava','amelia','isabella','jessica','lily','ella','sofia','mia','charlotte','grace','sophie','evie','harriet','alice','daisy','ellie','freya','ruby','holly','abigail','chloe','phoebe','millie','eleanor','isabelle','eva','scarlett','imogen','florence','sienna','rosie','lexi','lacey','amber','violet','jasmine','heidi','layla','bethany','zara','molly','faith','tilly','brooke','georgia'],last:['smith','jones','williams','taylor','brown','davies','evans','wilson','thomas','roberts','johnson','lewis','walker','robinson','wood','thompson','white','watson','jackson','wright','green','harris','cooper','king','lee','martin','clarke','james','morgan','hughes','edwards','hill','moore','clark','harrison','scott','young','morris','hall','ward','turner','carter','phillips','mitchell','patel','shaw','marshall','cook','kelly','collins','bennett','brooks','butler','foster','price','coleman','jenkins','bailey','bell','cox','gray','richardson','hayes','ford','hamilton','graham','sullivan','wallace','cole','west','jordan','fisher','ellis','gibson','murray','freeman','wells','webb','simpson','tucker','porter','hunter'],styles:['name_sep','nickname','word_combo','init_num','name_num']},
-  de:{flag:'🇩🇪',name:'Germany',first:['noah','leon','finn','paul','ben','elias','jonas','luca','luis','felix','maximilian','julian','david','jan','tim','niklas','tobias','simon','gabriel','alexander','fabian','stefan','thomas','michael','daniel','christian','andreas','markus','martin','sebastian','patrick','florian','dominic','peter','kai','nils','lukas','moritz','max','anna','marie','sophie','emma','mia','lena','lea','julia','laura','sara','sarah','lisa','katharina','nina','hannah','clara','amelie','leonie','emilia','franziska','johanna','maja','luisa','elena','isabel','theresa','maria','eva','andrea','monika','petra','susanne','sabine','anja','nicole','claudia','birgit','karin','heike','ulrike','gabi','tanja','silke','stefanie','melanie','katrin','astrid','annette','barbara','brigitte'],last:['mueller','schmidt','schneider','fischer','weber','meyer','wagner','becker','schulz','hoffmann','schaefer','koch','bauer','richter','klein','wolf','schroeder','neumann','schwarz','zimmermann','braun','krueger','hofmann','hartmann','lange','schmitt','werner','schmitz','krause','meier','lehmann','schmid','schulze','maier','koenig','walter','mayer','huber','herrmann','kaufmann','jung','frank','lorenz','vogt','moser','kaiser','roth','lang','riedel','fuchs','winkler','berger','beck','peters','sommer','thomas','voigt','kramer','henning','mann','hahn','vogel','schubert','bergmann','winter','wiese','pohl','baumann','haas','dietrich','engel','berg','lenz','pfeiffer','frey','hamann','stein','brandt','kuehn','siebert','gross','simon','burkhardt','otto','krohn','reinhardt'],styles:['name_sep','init_num','name_num','word_combo']},
-  au:{flag:'🇦🇺',name:'Australia',first:['oliver','william','jack','noah','henry','charlie','thomas','james','liam','lucas','ethan','mason','alexander','max','samuel','sebastian','harrison','oscar','archie','hunter','lachlan','riley','cooper','finn','caleb','mitchell','angus','dylan','cameron','blake','emma','olivia','ava','mia','amelia','grace','isla','charlotte','lily','sophia','chloe','ruby','ella','ellie','sophie','isabella','imogen','zoe','scarlett','matilda','sienna','anna','alice','ivy','jade','paige','evie','layla','jasmine','bonnie','clementine','piper','harper','summer','georgia','madison','amber','holly','bronte','stella','cassidy','hayley','tahlia','kylie','natalie','jessica','taylah','brittany','ashleigh','kimberley','shae','kayla','brianna','chelsea','courtney','maddison','brooke','skye','abbey','nikki'],last:['smith','jones','williams','brown','wilson','taylor','johnson','white','martin','anderson','thompson','thomas','walker','harris','lee','ryan','robinson','kelly','king','miller','davis','young','moore','hill','ward','campbell','scott','clark','mitchell','roberts','baker','carter','morris','rogers','evans','turner','phillips','cook','morgan','cooper','reed','bailey','bell','cox','foster','gray','james','price','myers','long','ross','murphy','coleman','jenkins','wright','green','adams','nelson','allen','hall','nguyen','lewis','edwards','stewart','brooks','watson','hughes','bennett','richardson','wood','hayes','ford','hamilton','shaw','marshall','tucker','porter','hunter','hicks','henry','boyd','mason','cross','doyle','burns','obrien','oconnor','osullivan','mcallister','mcdonald','mcgregor'],styles:['nickname','name_sep','word_combo','name_num','init_num','creative']},
-  it:{flag:'🇮🇹',name:'Italy',first:['luca','matteo','marco','andrea','davide','simone','lorenzo','stefano','roberto','carlo','giovanni','antonio','giuseppe','franco','luigi','riccardo','fabio','alberto','giorgio','enzo','massimo','claudio','sergio','mauro','daniele','nicola','filippo','emanuele','dario','christian','giulia','valentina','francesca','sara','alice','maria','anna','elena','laura','chiara','federica','alessia','martina','serena','roberta','claudia','paola','monica','silvia','michela','antonella','rosa','giovanna','lucia','angela','bianca','teresa','carmela','grazia','rita','emanuela','patrizia','daniela','cristina','manuela','barbara','elisa','viviana','nadia','sabrina','sonia','gabriella','lorenza','raffaella','stefania','eleonora','virginia','ilaria','ornella','donatella'],last:['rossi','ferrari','russo','colombo','bruni','ricci','marino','greco','bruno','gallo','conti','deluca','mancini','costa','giordano','rizzo','lombardi','moretti','barbieri','fontana','santoro','mariani','rinaldi','caruso','ferretti','bianchi','esposito','romano','palermo','fiore','leone','longo','gentile','villa','cattaneo','rizzi','damico','martinelli','bassi','fabbri','montanari','pellegrini','carbone','benedetti','martini','gatti','caputo','ferrara','coppola','messina','deangelis','valentini','castiglione','piras','riva','piano','sala','grassi','ruggiero','piscopo','sorrentino','pappalardo','amendola'],styles:['name_sep','name_num','init_num','word_combo']},
-  es:{flag:'🇪🇸',name:'Spain',first:['miguel','jose','antonio','david','carlos','jesus','javier','francisco','daniel','alejandro','pablo','manuel','pedro','jorge','juan','alberto','raul','sergio','ivan','fernando','luis','oscar','ruben','adrian','marcos','andres','rafael','mario','roberto','gonzalo','lucia','maria','carmen','ana','isabel','rosa','elena','sara','marta','laura','cristina','paula','nuria','patricia','alba','pilar','claudia','raquel','sandra','andrea','silvia','beatriz','olga','yolanda','noelia','vanessa','alicia','irene','lorena','julia','miriam','veronica','monica','diana','natalia','rebeca','esther','eva','sonia','teresa','consuelo','dolores','remedios','amparo','concepcion','trinidad','ascension','asuncion','inmaculada'],last:['garcia','martinez','lopez','sanchez','gonzalez','perez','rodriguez','fernandez','gomez','martin','jimenez','ruiz','hernandez','diaz','moreno','munoz','alvarez','romero','alonso','gutierrez','navarro','torres','dominguez','vazquez','ramos','gil','serrano','morales','molina','blanco','suarez','castro','ortega','delgado','ortiz','marin','iglesias','santos','castillo','rubio','herrera','vega','medina','leon','marquez','flores','cabrera','campo','pena','vargas','reyes','nieto','carrasco','vera','bermudez','aguilar','espinosa','leal','hidalgo','prieto','soria','fuentes','pardo','franco','barrera','rios','bravo','salinas','medrano','gimenez','soto','mora','barrios','cortes','carmona','miranda','roldan'],styles:['name_sep','name_num','init_num','word_combo','nickname']},
-  my:{flag:'🇲🇾',name:'Malaysia',first:['ahmad','muhammad','mohd','aziz','ismail','ibrahim','hassan','ali','omar','yusof','razak','rahman','rahim','azman','zulkifli','faizal','hafiz','rizal','azlan','nordin','nur','siti','noraini','farah','sarah','aisyah','aminah','fatimah','zainab','rohani','halimah','ramlah','hamidah','norliza','norzahra','hasnah','rokiah','salmah','asiah','chin','wei','ming','xin','li','ying','mei','hui','jun','yan','hong','ping','jing','zhi','qing','fang','ling','yi','chen','xian','chong','lim','tan','lee','ng','wong','chan','ong','cheah','yong','koh','goh','low','teh','poh','leong','chew','lau','foong','yeoh','ooi','lam','yap','woo','soo','wee'],last:['ahmad','ibrahim','ismail','hassan','ali','omar','rahman','rahim','aziz','hussein','abdullah','yusof','mohd','razak','tan','lim','lee','ng','wong','chan','ong','cheah','yong','koh','goh','low','teh','poh','leong','chew','lau','foong','yeoh','ooi','lam','yap','woo','soo','wee','krishnan','kumar','muthu','raja','rajan','selvam','nair','pillai','menon','subramaniam','nadarajan','arumugam','murugasen','shanmugam','suppiah','ponnusamy','velayutham'],styles:['name_num','word_combo','init_num','name_sep','nickname']},
-  ru:{flag:'🇷🇺',name:'Russia',first:['alexander','alexei','dmitri','ivan','mikhail','nikolai','sergei','vladimir','andrei','pavel','boris','viktor','konstantin','georgiy','evgeny','maxim','artem','ilya','roman','timur','igor','oleg','valentin','anatoly','arkady','gennady','leonid','stanislav','vyacheslav','yuri','anna','elena','natasha','olga','tatiana','irina','svetlana','marina','oksana','galina','liudmila','valentina','yelena','anastasia','ekaterina','daria','polina','alena','yulia','maria','xenia','vika','katya','sasha','masha','lena','tanya','ira','nadya','sonya','vera','nadia','larisa','inna','zoya','rosa','raisa','tamara','antonina','nina','varya','luba','valia','nona','zina','mila','lida','zhanna','alla','aza'],last:['ivanov','smirnov','kuznetsov','popov','vasiliev','petrov','sokolov','mikhailov','novikov','fedorov','morozov','volkov','alekseev','lebedev','semenov','egorov','pavlov','kozlov','stepanov','nikolaev','orlov','andreev','makarov','nikitin','zakharov','zaytsev','solovyev','borisov','yakovlev','grigoriev','romanov','vorobyev','sidorov','medvedev','rogov','osipov','terentyev','frolov','baranov','davydov','tikhonov','konovalov','poliakov','afanasiev','sobolev','denisov','drozdov','panfilov','morozova','volkova','novikova','fedorova','sokolova','petrova','ivanova','smirnova','kuznetsova','popova','vasileva','alekseeva','lebedeva','semyonova','yegorova','pavlova','kozlova','stepanova'],styles:['name_sep','init_num','name_num','word_combo']}
-};
-
-const WORDS=['green','blue','red','dark','bright','cool','fast','wild','lone','sky','sun','moon','star','fire','ice','storm','rain','wind','snow','night','dawn','dusk','cyber','neon','ultra','mega','super','hyper','turbo','alpha','beta','delta','sigma','prime','elite','max','pro','ace','gold','iron','steel','silver','crystal','diamond','cosmic','atomic','solar','lunar','stellar','nova','echo','phantom','shadow','ghost','blade','thunder','lightning','flash','speed','drift','cruise','glide','surf','wave','tide','peak','ridge','cliff','valley','river','ocean','lake','forest','jungle','desert','arctic','tropic','zenith','apex','core','hub','pulse','surge','boost','spark','glow','shine','blaze','frost','mist','cloud','stream','rush','burst','brave','swift','sharp','bold','keen','free','deep','wide','high','long','strong'];
-const SUFFIXES_NUM=['1','2','3','4','5','7','8','9','10','11','12','13','21','22','23','24','25','42','52','55','64','66','72','75','77','78','80','82','83','84','85','86','87','88','89','90','91','92','93','94','95','96','97','98','99','100','123','125','143','200','321','007','365','247','101','786','452','911','2000','2001','2002','2003','2004','2005'];
-const COUNTRY_KEYS=Object.keys(COUNTRIES);
-let activeDomains=new Set(DOMAINS);
-let activeCountries=new Set(COUNTRY_KEYS);
-let generatedEmails=[];
-let learnedPatterns={types:{},separators:{},suffixRates:0,wordPool:new Set()};
-
-function buildCountriesGrid(){
-  const grid=document.getElementById('countriesGrid');
-  grid.innerHTML='';
-  COUNTRY_KEYS.forEach(k=>{
-    const c=COUNTRIES[k];
-    const chip=document.createElement('label');
-    chip.className='country-chip active';
-    chip.dataset.key=k;
-    chip.innerHTML=`<input type="checkbox" checked><div class="ck"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3.5 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="cflag">${c.flag}</span><span class="cname">${c.name}</span>`;
-    chip.querySelector('input').addEventListener('change',e=>{
-      chip.classList.toggle('active',e.target.checked);
-      if(e.target.checked) activeCountries.add(k); else activeCountries.delete(k);
-      updateStats(); updateDistRow();
-    });
-    grid.appendChild(chip);
-  });
-  updateDistRow();
-}
-
-function buildDomainsGrid(){
-  const grid=document.getElementById('domainsGrid');
-  grid.innerHTML='';
-  DOMAINS.forEach(d=>{
-    const chip=document.createElement('label');
-    chip.className='domain-chip active';
-    chip.innerHTML=`<input type="checkbox" checked><div class="ck"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3.5 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="dname">${d}</span>`;
-    chip.querySelector('input').addEventListener('change',e=>{
-      chip.classList.toggle('active',e.target.checked);
-      if(e.target.checked) activeDomains.add(d); else activeDomains.delete(d);
-      updateStats();
-    });
-    grid.appendChild(chip);
-  });
-}
-
-function updateDistRow(){
-  const row=document.getElementById('distRow');
-  if(!activeCountries.size){row.innerHTML='';return;}
-  const perC=Math.floor(100/activeCountries.size);
-  row.innerHTML=[...activeCountries].map(k=>`<span class="dist-pill">${COUNTRIES[k].flag} ${COUNTRIES[k].name} ~${perC}%</span>`).join('');
-}
-
-function selectAllCountries(){document.querySelectorAll('.country-chip').forEach(chip=>{chip.classList.add('active');chip.querySelector('input').checked=true;activeCountries.add(chip.dataset.key);});updateStats();updateDistRow();}
-function clearAllCountries(){document.querySelectorAll('.country-chip').forEach(chip=>{chip.classList.remove('active');chip.querySelector('input').checked=false;activeCountries.delete(chip.dataset.key);});updateStats();updateDistRow();}
-function selectAllDomains(){document.querySelectorAll('.domain-chip').forEach((chip,i)=>{chip.classList.add('active');chip.querySelector('input').checked=true;activeDomains.add(DOMAINS[i]);});updateStats();}
-function clearAllDomains(){document.querySelectorAll('.domain-chip').forEach((chip,i)=>{chip.classList.remove('active');chip.querySelector('input').checked=false;activeDomains.delete(DOMAINS[i]);});updateStats();}
-function setCount(n){document.getElementById('countInput').value=n;}
-
-function parseEmails(txt){return txt.split(/[\n,;]+/).map(e=>e.trim().toLowerCase()).filter(e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));}
-
-function classifyUsername(u){
-  if(/^[a-z]+[._-][a-z]+\d*$/.test(u)) return 'name_sep';
-  if(/^[a-z]{2,12}\d{2,6}$/.test(u)) return 'name_num';
-  if(/^[a-z]{1,3}\d{2,6}$/.test(u)) return 'init_num';
-  if(/^[a-z_.-]{5,20}$/.test(u)) return 'word_combo';
-  if(/^[a-z]+[._-][a-z0-9]+$/.test(u)) return 'word_combo';
-  return 'creative';
-}
-
-function analyzeSeed(){
-  const raw=document.getElementById('seedInput').value;
-  const emails=parseEmails(raw);
-  document.getElementById('seedCount').textContent=`${emails.length} emails detected`;
-  document.getElementById('stSeed').textContent=emails.length;
-  if(!emails.length) return;
-  const types={},seps={'':0,'.':0,'_':0,'-':0};
-  let hasSuffix=0;
-  const wordPool=new Set();
-  emails.forEach(email=>{
-    const u=email.split('@')[0];
-    const t=classifyUsername(u);
-    types[t]=(types[t]||0)+1;
-    ['.','-','_'].forEach(s=>{if(u.includes(s)) seps[s]++;});
-    if(!u.includes('.')&&!u.includes('_')&&!u.includes('-')) seps['']++;
-    if(/\d/.test(u)) hasSuffix++;
-    u.replace(/[^a-z]/g,' ').split(' ').filter(w=>w.length>2).forEach(w=>wordPool.add(w));
-  });
-  learnedPatterns={types,separators:seps,suffixRates:hasSuffix/emails.length,wordPool};
-  const pc=Object.keys(types).length;
-  document.getElementById('stPatterns').textContent=pc;
-
-  const avgLen=emails.length?Math.round(emails.map(e=>e.split('@')[0].length).reduce((a,b)=>a+b,0)/emails.length):0;
-  document.getElementById('aAvgLen').textContent=avgLen+' chars';
-
-  const years=[];
-  emails.forEach(email=>{const m=email.split('@')[0].match(/(19[4-9]\d|20[0-2]\d)/g);if(m) m.forEach(y=>years.push(parseInt(y)));});
-  if(years.length){
-    const minY=Math.min(...years),maxY=Math.max(...years);
-    const freq={};years.forEach(y=>{freq[y]=(freq[y]||0)+1;});
-    const topYear=Object.entries(freq).sort((a,b)=>b[1]-a[1])[0][0];
-    document.getElementById('aYearRange').textContent=minY===maxY?`${minY}`:`${minY}–${maxY}
-top: ${topYear}`;
-  } else {
-    document.getElementById('aYearRange').textContent='none found';
-  }
-
-  const total=Object.values(seps).reduce((a,b)=>a+b,0)||1;
-  const sepLabels={'':'none','.':'dot','_':'underscore','-':'hyphen'};
-  const sepText=Object.entries(seps).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${sepLabels[k]}: ${Math.round(v/total*100)}%`).join('
-')||'none';
-  document.getElementById('aSepFreq').textContent=sepText;
-  document.getElementById('analysisPanel').style.display='block';
-
-  showToast(`Analyzed ${emails.length} emails — ${pc} pattern types found`);
-}
-
-function pickWeighted(obj){
-  const total=Object.values(obj).reduce((a,b)=>a+b,0);
-  if(!total) return Object.keys(obj)[0];
-  let r=Math.random()*total;
-  for(const[k,v] of Object.entries(obj)){r-=v;if(r<=0) return k;}
-  return Object.keys(obj)[0];
-}
-
-function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
-function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
-
-function generateUsername(mode,countryKey){
-  const c=COUNTRIES[countryKey];
-  const pool=(learnedPatterns.wordPool&&learnedPatterns.wordPool.size>5)?[...learnedPatterns.wordPool,...WORDS]:WORDS;
-  const useLearnedTypes=mode==='learned'&&learnedPatterns.types&&Object.keys(learnedPatterns.types).length>0;
-  const type=useLearnedTypes?pickWeighted(learnedPatterns.types):rand(c.styles);
-  const addSuffix=Math.random()<(learnedPatterns.suffixRates||0.42);
-  const sepObj=(learnedPatterns.separators&&Object.values(learnedPatterns.separators).some(v=>v>0))?learnedPatterns.separators:{'':5,'.':3,'_':3,'-':1};
-  const sep=pickWeighted(sepObj);
-  const suffix=addSuffix?rand(SUFFIXES_NUM):'';
-  let u='';
-  const fn=rand(c.first);
-  const ln=rand(c.last);
-  switch(type){
-    case 'name_sep':{const s=sep||rand(['.','_','']);u=fn+s+ln+suffix;break;}
-    case 'name_num':{u=(Math.random()>0.5?fn:ln)+randInt(10,9999);break;}
-    case 'init_num':{const inits=fn.charAt(0)+(Math.random()>0.4?ln.charAt(0):'')+(Math.random()>0.7?rand(c.last).charAt(0):'');u=inits+randInt(100,9999);break;}
-    case 'word_combo':{const s2=sep||rand(['.','_','-','']);u=Math.random()>0.5?rand(WORDS)+s2+rand(pool)+suffix:fn+rand(WORDS)+suffix;break;}
-    case 'nickname':{const pats=[()=>rand(WORDS)+rand(WORDS),()=>fn+rand(WORDS)+randInt(1,99),()=>rand(WORDS)+randInt(1000,9999),()=>fn+randInt(1960,2010),()=>ln+rand(['er','ster','man','son','jr','sr','66','88','99']),()=>rand(['big','lil','mr','ms','dr','the'])+fn+suffix,()=>rand(WORDS)+'dancer',()=>rand(WORDS)+rand(['cat','dog','wolf','fox','bear','hawk']),()=>fn+rand(['az','ox','uk','ca','us','ny','la'])+randInt(10,99)];u=rand(pats)();break;}
-    case 'creative':{const pats=[()=>rand(WORDS)+rand(WORDS),()=>fn+rand(WORDS)+randInt(1,99),()=>rand(WORDS)+randInt(1000,9999),()=>fn+randInt(1960,2008),()=>ln+rand(['man','son','er','ster']),()=>rand(['cool','big','the','mr','dr'])+ln+suffix,()=>fn+rand(['_','.'])+ln.slice(0,3)+randInt(10,99)];u=rand(pats)();break;}
-    default:u=fn+ln+suffix;
-  }
-  return u.toLowerCase().replace(/[^a-z0-9._-]/g,'').replace(/[._-]{2,}/g,'_').slice(0,30);
-}
-
-function updateStats(){
-  document.getElementById('stCountries').textContent=activeCountries.size;
-  document.getElementById('stDomains').textContent=activeDomains.size;
-}
-
-async function startGeneration(){
-  const domains=[...activeDomains];
-  const countries=[...activeCountries];
-  if(!domains.length){showToast('Select at least one domain',true);return;}
-  if(!countries.length){showToast('Select at least one country',true);return;}
-  const count=parseInt(document.getElementById('countInput').value);
-  if(!count||count<10||count>100000){showToast('Enter a count between 10 and 100,000',true);return;}
-  const mode=document.querySelector('input[name="mode"]:checked').value;
-  if(mode==='learned'&&Object.keys(learnedPatterns.types).length===0){const raw=document.getElementById('seedInput').value;if(raw.trim()) analyzeSeed();}
-  document.getElementById('generateBtn').disabled=true;
-  document.getElementById('downloadBtn').disabled=true;
-  document.getElementById('progressWrap').style.display='block';
-  document.getElementById('progressBar').style.width='0%';
-  document.getElementById('outputArea').value='';
-  generatedEmails=[];
-  const perDomain=Math.floor(count/domains.length);
-  const remainder=count%domains.length;
-  const domainQueue=[];
-  domains.forEach((d,i)=>{const qty=perDomain+(i<remainder?1:0);for(let x=0;x<qty;x++) domainQueue.push(d);});
-  for(let i=domainQueue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[domainQueue[i],domainQueue[j]]=[domainQueue[j],domainQueue[i]];}
-  const countryQueue=domainQueue.map((_,i)=>countries[i%countries.length]);
-  const seen=new Set();
-  const CHUNK=400;
-  let done=0;
-  const total=domainQueue.length;
-  await new Promise(resolve=>{
-    const run=()=>{
-      const end=Math.min(done+CHUNK,total);
-      for(let i=done;i<end;i++){
-        let u,attempt=0;
-        do{u=generateUsername(mode,countryQueue[i]);attempt++;}while(seen.has(u)&&attempt<15);
-        if(!seen.has(u)){seen.add(u);generatedEmails.push(u+domainQueue[i]);}
-      }
-      done=end;
-      document.getElementById('progressBar').style.width=Math.round((done/total)*100)+'%';
-      document.getElementById('stGenerated').textContent=generatedEmails.length.toLocaleString();
-      if(done<total) setTimeout(run,0); else resolve();
-    };
-    run();
-  });
-  document.getElementById('outputArea').value=generatedEmails.join('\n');
-  document.getElementById('generateBtn').disabled=false;
-  document.getElementById('downloadBtn').disabled=false;
-  showToast(`${generatedEmails.length.toLocaleString()} unique emails generated across ${countries.length} countr${countries.length===1?'y':'ies'}`);
-}
-
-function downloadOutput(){
-  if(!generatedEmails.length) return;
-  const blob=new Blob([generatedEmails.join('\n')],{type:'text/plain'});
-  const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download=`ms_emails_${generatedEmails.length}_${Date.now()}.txt`;
-  a.click();
-  URL.revokeObjectURL(a.href);
-  showToast('File downloaded');
-}
-
-function copyOutput(){const out=document.getElementById('outputArea').value;if(!out) return;navigator.clipboard.writeText(out).then(()=>showToast('Copied to clipboard'));}
-
-function clearOutput(){
-  document.getElementById('outputArea').value='';
-  generatedEmails=[];
-  document.getElementById('stGenerated').textContent='0';
-  document.getElementById('downloadBtn').disabled=true;
-  document.getElementById('progressBar').style.width='0%';
-  document.getElementById('progressWrap').style.display='none';
-}
-
-document.getElementById('seedInput').addEventListener('input',()=>{
-  const emails=parseEmails(document.getElementById('seedInput').value);
-  document.getElementById('seedCount').textContent=`${emails.length} emails detected`;
-  document.getElementById('stSeed').textContent=emails.length;
-});
-
-function showToast(msg,isError=false){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.style.borderLeftColor=isError?'var(--danger)':'var(--success)';
-  t.classList.add('show');
-  setTimeout(()=>t.classList.remove('show'),3200);
-}
-
-buildCountriesGrid();
-buildDomainsGrid();
-updateStats();
-</script>
-</body>
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>MSEmail Pro — Microsoft Email Generator</title>  
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">  
+<style>  
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}  
+:root{  
+--bg:#F8F7F4;--surface:#FFFFFF;--card:#FFFFFF;--border:#E8E3D8;  
+--accent:#B8942A;--accent-soft:#FDF6E3;--accent-glow:rgba(184,148,42,0.12);  
+--text:#1A1612;--muted:#8A7E6A;--success:#2D8A5E;--danger:#C0392B;  
+--gold:#B8942A;--gold-light:#F0D98C;--gold-dark:#8A6E1A;  
+--mono:'JetBrains Mono',monospace;--sans:'Inter',sans-serif;  
+}  
+html,body{height:100%}  
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}  
+.wrap{position:relative;z-index:1;max-width:1020px;margin:0 auto;padding:0 24px 80px}  
+header{padding:44px 0 36px;border-bottom:2px solid var(--border);margin-bottom:40px;display:flex;align-items:center;justify-content:space-between}  
+.logo{display:flex;align-items:center;gap:12px}  
+.logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#B8942A,#E6C84A);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 4px 16px rgba(184,148,42,0.3)}  
+.logo-text{font-size:19px;font-weight:700;letter-spacing:-0.3px;color:var(--text)}  
+.logo-text span{color:var(--gold)}  
+.badge{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--gold-dark);background:var(--accent-soft);border:1px solid var(--gold-light);padding:4px 12px;border-radius:20px;letter-spacing:1px;text-transform:uppercase}  
+h1{font-size:40px;font-weight:700;line-height:1.12;letter-spacing:-1.2px;margin-bottom:10px;color:var(--text)}  
+h1 em{font-style:normal;background:linear-gradient(90deg,#B8942A,#E6C84A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}  
+.subtitle{color:var(--muted);font-size:15px;line-height:1.65;margin-bottom:36px}  
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}  
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:24px;transition:border-color 0.2s;box-shadow:0 1px 4px rgba(0,0,0,0.06)}  
+.card:hover{border-color:var(--gold-light)}  
+.card.full{grid-column:1/-1}  
+.clabel{font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:8px}  
+.clabel::before{content:'';width:3px;height:12px;background:linear-gradient(180deg,#B8942A,#E6C84A);border-radius:2px;display:inline-block}  
+textarea{width:100%;background:#FAFAF8;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:12px;line-height:1.7;padding:14px;resize:vertical;outline:none;transition:border-color 0.2s,box-shadow 0.2s;min-height:190px}  
+textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--accent-glow)}  
+textarea::placeholder{color:#C4B89A}  
+input[type=number]{width:150px;background:#FAFAF8;border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-family:var(--mono);font-size:15px;font-weight:500;padding:10px 14px;outline:none;transition:border-color 0.2s,box-shadow 0.2s;-moz-appearance:textfield}  
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}  
+input[type=number]:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--accent-glow)}  
+.hint{font-size:12px;color:var(--muted);margin-top:5px}  
+.countries-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:4px}  
+.country-chip{display:flex;align-items:center;gap:8px;background:#FAFAF8;border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;cursor:pointer;transition:all 0.15s;user-select:none}  
+.country-chip:hover{border-color:var(--gold);background:var(--accent-soft)}  
+.country-chip.active{border-color:var(--gold);background:var(--accent-soft)}  
+.country-chip input[type=checkbox]{display:none}  
+.ck{width:15px;height:15px;border:1.5px solid var(--border);border-radius:4px;background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.15s}  
+.country-chip.active .ck{background:linear-gradient(135deg,#B8942A,#E6C84A);border-color:var(--gold)}  
+.ck svg{display:none}  
+.country-chip.active .ck svg{display:block}  
+.cflag{font-size:16px;line-height:1}  
+.cname{font-size:12px;font-weight:500;color:var(--text)}  
+.domains-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:8px}  
+.domain-chip{display:flex;align-items:center;gap:8px;background:#FAFAF8;border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;cursor:pointer;transition:all 0.15s;user-select:none}  
+.domain-chip:hover{border-color:var(--gold);background:var(--accent-soft)}  
+.domain-chip.active{border-color:var(--gold);background:var(--accent-soft)}  
+.domain-chip input[type=checkbox]{display:none}  
+.dname{font-family:var(--mono);font-size:11.5px;color:var(--text)}  
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:10px;font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s;letter-spacing:0.1px;white-space:nowrap}  
+.btn-primary{background:linear-gradient(135deg,#B8942A,#D4AA3A);color:#fff;box-shadow:0 4px 16px rgba(184,148,42,0.35)}  
+.btn-primary:hover{background:linear-gradient(135deg,#C8A030,#E6C84A);box-shadow:0 6px 24px rgba(184,148,42,0.45);transform:translateY(-1px)}  
+.btn-primary:active{transform:translateY(0)}  
+.btn-secondary{background:var(--card);color:var(--text);border:1.5px solid var(--border)}  
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold)}  
+.btn-ghost{background:transparent;color:var(--muted);border:1.5px solid var(--border);padding:8px 16px;font-size:12px}  
+.btn-ghost:hover{color:var(--gold);border-color:var(--gold-light)}  
+.btn:disabled{opacity:0.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}  
+.stats-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}  
+.stat-box{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,0.05)}  
+.stat-v{font-family:var(--mono);font-size:20px;font-weight:600;color:var(--text);line-height:1;margin-bottom:4px}  
+.stat-v.gold{color:var(--gold)}  
+.stat-v.green{color:var(--success)}  
+.stat-l{font-size:11px;color:var(--muted)}  
+.controls-row{display:flex;gap:12px;margin-bottom:18px;flex-wrap:wrap;align-items:center}  
+.progress-wrap{width:100%;height:4px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:16px;display:none}  
+.progress-bar{height:100%;background:linear-gradient(90deg,#B8942A,#E6C84A);border-radius:4px;width:0%;transition:width 0.08s linear}  
+#outputArea{min-height:280px;font-size:11.5px;line-height:1.9;color:#5A4A1A;background:#FFFDF5}  
+.row-between{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}  
+.acts{display:flex;gap:8px}  
+.sr{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}  
+.tag{font-size:11px;color:var(--muted);font-family:var(--mono)}  
+.mode-box{background:#FAFAF8;border-radius:10px;padding:14px;border:1.5px solid var(--border);margin-top:14px}  
+.mode-box label{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;padding:3px 0;color:var(--text)}  
+.qrow{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}  
+.toast{position:fixed;bottom:28px;right:28px;background:var(--card);border:1.5px solid var(--border);border-left:3px solid var(--success);padding:13px 20px;border-radius:10px;font-size:13px;color:var(--text);z-index:100;transform:translateY(20px);opacity:0;transition:all 0.3s ease;pointer-events:none;max-width:320px;box-shadow:0 4px 20px rgba(0,0,0,0.1)}  
+.toast.show{transform:translateY(0);opacity:1}  
+.dist-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}  
+.dist-pill{font-family:var(--mono);font-size:10px;color:var(--gold-dark);background:var(--accent-soft);border:1px solid var(--gold-light);border-radius:20px;padding:3px 10px}  
+.gold-divider{height:2px;background:linear-gradient(90deg,var(--gold),var(--gold-light),transparent);border-radius:2px;margin-bottom:40px}  
+@media(max-width:700px){.grid2{grid-template-columns:1fr}.stats-row{grid-template-columns:1fr 1fr}h1{font-size:26px}header{flex-direction:column;align-items:flex-start;gap:14px}.stats-row .stat-box:last-child{grid-column:1/-1}}  
+</style>  
+</head>  
+<body>  
+<div class="wrap">  <header>  
+  <div class="logo">  
+    <div class="logo-icon">✉</div>  
+    <div class="logo-text">MS<span>Email</span> Pro</div>  
+  </div>  
+  <div class="badge">v3.0 — Country Engine</div>  
+</header>  <div class="gold-divider"></div>  <h1>Generate <em>Microsoft</em><br>Email Addresses</h1>  
+<p class="subtitle">Country-aware name engine · 9 nations · 14 Microsoft domains · Up to 100K emails per run<br>Paste real seeds to train patterns or use Auto mode — download ready for ZeroBounce.</p>  <div class="grid2">  
+  <div class="card">  
+    <div class="clabel">Seed Emails — Paste Real List</div>  
+    <textarea id="seedInput" placeholder="Paste your real emails here, one per line&#10;&#10;greenrainforest@msn.com&#10;skullnzilla@msn.com&#10;captain1971@hotmail.com&#10;diane_weinstein@msn.com"></textarea>  
+    <div style="display:flex;align-items:center;gap:10px;margin-top:10px">  
+      <span class="tag" id="seedCount">0 emails detected</span>  
+      <button class="btn btn-ghost" onclick="analyzeSeed()">Analyze Patterns</button>  
+    </div>  
+  </div>    <div class="card">  
+    <div class="clabel">Generation Settings</div>  
+    <div style="margin-bottom:14px">  
+      <div class="hint" style="margin-bottom:7px">Number of emails to generate</div>  
+      <input type="number" id="countInput" value="1000" min="10" max="100000">  
+      <div class="hint">Min: 10 · Max: 100,000</div>  
+    </div>  
+    <div class="hint" style="margin-bottom:7px">Quick amounts</div>  
+    <div class="qrow">  
+      <button class="btn btn-ghost" onclick="setCount(500)">500</button>  
+      <button class="btn btn-ghost" onclick="setCount(1000)">1K</button>  
+      <button class="btn btn-ghost" onclick="setCount(5000)">5K</button>  
+      <button class="btn btn-ghost" onclick="setCount(10000)">10K</button>  
+      <button class="btn btn-ghost" onclick="setCount(50000)">50K</button>  
+      <button class="btn btn-ghost" onclick="setCount(100000)">100K</button>  
+    </div>  
+    <div class="mode-box">  
+      <div class="hint" style="margin-bottom:8px">Pattern mode</div>  
+      <label><input type="radio" name="mode" value="learned" checked style="accent-color:var(--gold)"> Learn from seed emails</label>  
+      <label style="margin-top:4px"><input type="radio" name="mode" value="auto" style="accent-color:var(--gold)"> Auto (no seed needed)</label>  
+    </div>  
+  </div>  
+</div>  <div class="card full" style="margin-bottom:20px">  
+  <div class="clabel">Country Engine — Select Target Countries</div>  
+  <p class="hint" style="margin-bottom:12px">Names, styles and patterns are specific to each country's real naming conventions</p>  
+  <div class="sr">  
+    <button class="btn btn-ghost" onclick="selectAllCountries()">Select All</button>  
+    <button class="btn btn-ghost" onclick="clearAllCountries()">Clear All</button>  
+  </div>  
+  <div class="countries-grid" id="countriesGrid"></div>  
+  <div class="dist-row" id="distRow"></div>  
+</div>  <div class="card full" style="margin-bottom:20px">  
+  <div class="clabel">Microsoft Domains — Select Active</div>  
+  <div class="sr">  
+    <button class="btn btn-ghost" onclick="selectAllDomains()">Select All</button>  
+    <button class="btn btn-ghost" onclick="clearAllDomains()">Clear All</button>  
+  </div>  
+  <div class="domains-grid" id="domainsGrid"></div>  
+</div>  <div class="stats-row">  
+  <div class="stat-box"><div class="stat-v gold" id="stSeed">0</div><div class="stat-l">Seed Emails</div></div>  
+  <div class="stat-box"><div class="stat-v" id="stPatterns">0</div><div class="stat-l">Patterns Found</div></div>  
+  <div class="stat-box"><div class="stat-v gold" id="stCountries">9</div><div class="stat-l">Countries Active</div></div>  
+  <div class="stat-box"><div class="stat-v" id="stDomains">14</div><div class="stat-l">Domains Active</div></div>  
+  <div class="stat-box"><div class="stat-v green" id="stGenerated">0</div><div class="stat-l">Generated</div></div>  
+</div>  <div class="controls-row">  
+  <button class="btn btn-primary" id="generateBtn" onclick="startGeneration()">  
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1v13M1 7.5h13" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>  
+    Generate Emails  
+  </button>  
+  <button class="btn btn-secondary" id="downloadBtn" onclick="downloadOutput()" disabled>  
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v8M4 6l3 3 3-3M1 12h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>  
+    Download .txt  
+  </button>  
+  <button class="btn btn-secondary" onclick="clearOutput()">Clear</button>  
+</div>  <div class="progress-wrap" id="progressWrap">  
+  <div class="progress-bar" id="progressBar"></div>  
+</div>  <div class="card full">  
+  <div class="row-between">  
+    <div class="clabel" style="margin-bottom:0">Output — Generated Emails</div>  
+    <div class="acts">  
+      <button class="btn btn-ghost" onclick="copyOutput()">Copy All</button>  
+    </div>  
+  </div>  
+  <textarea id="outputArea" readonly placeholder="Generated emails will appear here...&#10;&#10;Select countries, pick domains, set your count and hit Generate."></textarea>  
+</div>  </div>  
+<div class="toast" id="toast"></div>  <script>  
+const DOMAINS = [  
+  '@msn.com','@hotmail.co.uk','@live.co.uk','@hotmail.ca',  
+  '@live.ca','@live.fr','@hotmail.fr','@live.de',  
+  '@hotmail.de','@hotmail.it','@hotmail.es','@outlook.com',  
+  '@hotmail.com','@live.com'  
+];  
+  
+const COUNTRIES = {  
+  us:{flag:'🇺🇸',name:'USA',first:['james','john','robert','michael','william','david','richard','joseph','thomas','charles','christopher','daniel','matthew','anthony','mark','donald','steven','paul','andrew','joshua','kenneth','kevin','brian','george','timothy','ronald','edward','jason','jeffrey','ryan','jacob','gary','nicholas','eric','jonathan','stephen','larry','justin','scott','brandon','benjamin','samuel','raymond','frank','gregory','alexander','patrick','jack','dennis','jerry','tyler','aaron','jose','adam','henry','nathan','douglas','zachary','peter','kyle','noah','ethan','jeremy','walter','christian','keith','roger','terry','austin','sean','gerald','carl','harold','dylan','arthur','lawrence','jordan','jesse','bryan','billy','joe','bruce','albert','willie','gabriel','logan','alan','juan','wayne','roy','ralph','randy','eugene','vincent','russell','elijah','louis','philip','bobby','johnny'],last:['smith','johnson','williams','brown','jones','garcia','miller','davis','martinez','wilson','anderson','taylor','thomas','hernandez','moore','martin','jackson','thompson','white','lopez','lee','gonzalez','harris','clark','lewis','robinson','walker','perez','hall','young','allen','sanchez','wright','king','scott','green','baker','adams','nelson','hill','ramirez','campbell','mitchell','roberts','carter','phillips','evans','turner','torres','parker','collins','edwards','stewart','flores','morris','nguyen','murphy','rivera','cook','rogers','morgan','peterson','cooper','reed','bailey','bell','gomez','kelly','howard','ward','cox','diaz','richardson','wood','watson','brooks','bennett','gray','james','reyes','hughes','price','myers','long','foster','sanders','ross','morales','powell','sullivan','russell','ortiz','jenkins','gutierrez','perry','butler','barnes','fisher'],styles:['nickname','name_num','word_combo','name_sep','init_num','creative']},  
+  ca:{flag:'🇨🇦',name:'Canada',first:['liam','noah','oliver','elijah','james','william','benjamin','lucas','henry','alexander','mason','ethan','daniel','jacob','logan','jackson','sebastian','jack','aiden','owen','samuel','ryan','nathan','christian','caleb','matthew','emma','olivia','ava','sophia','isabella','mia','charlotte','amelia','harper','evelyn','abigail','emily','elizabeth','mila','ella','avery','sofia','camila','aria','scarlett','victoria','madison','luna','grace','chloe','penelope','layla','riley','zoey','nora','lily','eleanor','hannah','lillian','addison','aubrey','ellie','stella','natalie','zoe','leah','hazel','violet','aurora','savannah','audrey','brooklyn','bella','claire','skylar','lucy','paisley','everly','anna','caroline','nova','genesis','emilia','kennedy'],last:['tremblay','gagnon','roy','cote','bouchard','gauthier','morin','lavoie','fortin','girard','gagne','ouellet','pelletier','bergeron','leblanc','lefebvre','paquette','leclerc','belanger','lachance','lapointe','hebert','beaulieu','dupont','rioux','smith','johnson','brown','wilson','martin','anderson','thompson','taylor','harris','clark','lewis','robinson','walker','hall','young','allen','king','scott','green','baker','adams','nelson','hill','campbell','mitchell','roberts','carter','phillips','evans','turner','parker','collins','edwards','stewart','murphy','rogers','morgan','peterson','cooper','reed','bailey','bell','kelly','howard','ward','cox','wood','watson','brooks','bennett','gray','price','myers','long','foster','sanders','ross'],styles:['name_sep','name_num','init_num','creative','nickname']},  
+  uk:{flag:'🇬🇧',name:'UK',first:['oliver','george','harry','jack','noah','charlie','jacob','alfie','freddie','oscar','james','william','thomas','henry','leo','archie','ethan','joshua','joseph','sebastian','samuel','arthur','max','alexander','lucas','mason','liam','isaac','muhammed','daniel','logan','ryan','matthew','lewis','benjamin','adam','harrison','finley','evan','callum','jake','luke','edward','poppy','olivia','emily','isla','ava','amelia','isabella','jessica','lily','ella','sofia','mia','charlotte','grace','sophie','evie','harriet','alice','daisy','ellie','freya','ruby','holly','abigail','chloe','phoebe','millie','eleanor','isabelle','eva','scarlett','imogen','florence','sienna','rosie','lexi','lacey','amber','violet','jasmine','heidi','layla','bethany','zara','molly','faith','tilly','brooke','georgia'],last:['smith','jones','williams','taylor','brown','davies','evans','wilson','thomas','roberts','johnson','lewis','walker','robinson','wood','thompson','white','watson','jackson','wright','green','harris','cooper','king','lee','martin','clarke','james','morgan','hughes','edwards','hill','moore','clark','harrison','scott','young','morris','hall','ward','turner','carter','phillips','mitchell','patel','shaw','marshall','cook','kelly','collins','bennett','brooks','butler','foster','price','coleman','jenkins','bailey','bell','cox','gray','richardson','hayes','ford','hamilton','graham','sullivan','wallace','cole','west','jordan','fisher','ellis','gibson','murray','freeman','wells','webb','simpson','tucker','porter','hunter'],styles:['name_sep','nickname','word_combo','init_num','name_num']},  
+  de:{flag:'🇩🇪',name:'Germany',first:['noah','leon','finn','paul','ben','elias','jonas','luca','luis','felix','maximilian','julian','david','jan','tim','niklas','tobias','simon','gabriel','alexander','fabian','stefan','thomas','michael','daniel','christian','andreas','markus','martin','sebastian','patrick','florian','dominic','peter','kai','nils','lukas','moritz','max','anna','marie','sophie','emma','mia','lena','lea','julia','laura','sara','sarah','lisa','katharina','nina','hannah','clara','amelie','leonie','emilia','franziska','johanna','maja','luisa','elena','isabel','theresa','maria','eva','andrea','monika','petra','susanne','sabine','anja','nicole','claudia','birgit','karin','heike','ulrike','gabi','tanja','silke','stefanie','melanie','katrin','astrid','annette','barbara','brigitte'],last:['mueller','schmidt','schneider','fischer','weber','meyer','wagner','becker','schulz','hoffmann','schaefer','koch','bauer','richter','klein','wolf','schroeder','neumann','schwarz','zimmermann','braun','krueger','hofmann','hartmann','lange','schmitt','werner','schmitz','krause','meier','lehmann','schmid','schulze','maier','koenig','walter','mayer','huber','herrmann','kaufmann','jung','frank','lorenz','vogt','moser','kaiser','roth','lang','riedel','fuchs','winkler','berger','beck','peters','sommer','thomas','voigt','kramer','henning','mann','hahn','vogel','schubert','bergmann','winter','wiese','pohl','baumann','haas','dietrich','engel','berg','lenz','pfeiffer','frey','hamann','stein','brandt','kuehn','siebert','gross','simon','burkhardt','otto','krohn','reinhardt'],styles:['name_sep','init_num','name_num','word_combo']},  
+  au:{flag:'🇦🇺',name:'Australia',first:['oliver','william','jack','noah','henry','charlie','thomas','james','liam','lucas','ethan','mason','alexander','max','samuel','sebastian','harrison','oscar','archie','hunter','lachlan','riley','cooper','finn','caleb','mitchell','angus','dylan','cameron','blake','emma','olivia','ava','mia','amelia','grace','isla','charlotte','lily','sophia','chloe','ruby','ella','ellie','sophie','isabella','imogen','zoe','scarlett','matilda','sienna','anna','alice','ivy','jade','paige','evie','layla','jasmine','bonnie','clementine','piper','harper','summer','georgia','madison','amber','holly','bronte','stella','cassidy','hayley','tahlia','kylie','natalie','jessica','taylah','brittany','ashleigh','kimberley','shae','kayla','brianna','chelsea','courtney','maddison','brooke','skye','abbey','nikki'],last:['smith','jones','williams','brown','wilson','taylor','johnson','white','martin','anderson','thompson','thomas','walker','harris','lee','ryan','robinson','kelly','king','miller','davis','young','moore','hill','ward','campbell','scott','clark','mitchell','roberts','baker','carter','morris','rogers','evans','turner','phillips','cook','morgan','cooper','reed','bailey','bell','cox','foster','gray','james','price','myers','long','ross','murphy','coleman','jenkins','wright','green','adams','nelson','allen','hall','nguyen','lewis','edwards','stewart','brooks','watson','hughes','bennett','richardson','wood','hayes','ford','hamilton','shaw','marshall','tucker','porter','hunter','hicks','henry','boyd','mason','cross','doyle','burns','obrien','oconnor','osullivan','mcallister','mcdonald','mcgregor'],styles:['nickname','name_sep','word_combo','name_num','init_num','creative']},  
+  it:{flag:'🇮🇹',name:'Italy',first:['luca','matteo','marco','andrea','davide','simone','lorenzo','stefano','roberto','carlo','giovanni','antonio','giuseppe','franco','luigi','riccardo','fabio','alberto','giorgio','enzo','massimo','claudio','sergio','mauro','daniele','nicola','filippo','emanuele','dario','christian','giulia','valentina','francesca','sara','alice','maria','anna','elena','laura','chiara','federica','alessia','martina','serena','roberta','claudia','paola','monica','silvia','michela','antonella','rosa','giovanna','lucia','angela','bianca','teresa','carmela','grazia','rita','emanuela','patrizia','daniela','cristina','manuela','barbara','elisa','viviana','nadia','sabrina','sonia','gabriella','lorenza','raffaella','stefania','eleonora','virginia','ilaria','ornella','donatella'],last:['rossi','ferrari','russo','colombo','bruni','ricci','marino','greco','bruno','gallo','conti','deluca','mancini','costa','giordano','rizzo','lombardi','moretti','barbieri','fontana','santoro','mariani','rinaldi','caruso','ferretti','bianchi','esposito','romano','palermo','fiore','leone','longo','gentile','villa','cattaneo','rizzi','damico','martinelli','bassi','fabbri','montanari','pellegrini','carbone','benedetti','martini','gatti','caputo','ferrara','coppola','messina','deangelis','valentini','castiglione','piras','riva','piano','sala','grassi','ruggiero','piscopo','sorrentino','pappalardo','amendola'],styles:['name_sep','name_num','init_num','word_combo']},  
+  es:{flag:'🇪🇸',name:'Spain',first:['miguel','jose','antonio','david','carlos','jesus','javier','francisco','daniel','alejandro','pablo','manuel','pedro','jorge','juan','alberto','raul','sergio','ivan','fernando','luis','oscar','ruben','adrian','marcos','andres','rafael','mario','roberto','gonzalo','lucia','maria','carmen','ana','isabel','rosa','elena','sara','marta','laura','cristina','paula','nuria','patricia','alba','pilar','claudia','raquel','sandra','andrea','silvia','beatriz','olga','yolanda','noelia','vanessa','alicia','irene','lorena','julia','miriam','veronica','monica','diana','natalia','rebeca','esther','eva','sonia','teresa','consuelo','dolores','remedios','amparo','concepcion','trinidad','ascension','asuncion','inmaculada'],last:['garcia','martinez','lopez','sanchez','gonzalez','perez','rodriguez','fernandez','gomez','martin','jimenez','ruiz','hernandez','diaz','moreno','munoz','alvarez','romero','alonso','gutierrez','navarro','torres','dominguez','vazquez','ramos','gil','serrano','morales','molina','blanco','suarez','castro','ortega','delgado','ortiz','marin','iglesias','santos','castillo','rubio','herrera','vega','medina','leon','marquez','flores','cabrera','campo','pena','vargas','reyes','nieto','carrasco','vera','bermudez','aguilar','espinosa','leal','hidalgo','prieto','soria','fuentes','pardo','franco','barrera','rios','bravo','salinas','medrano','gimenez','soto','mora','barrios','cortes','carmona','miranda','roldan'],styles:['name_sep','name_num','init_num','word_combo','nickname']},  
+  my:{flag:'🇲🇾',name:'Malaysia',first:['ahmad','muhammad','mohd','aziz','ismail','ibrahim','hassan','ali','omar','yusof','razak','rahman','rahim','azman','zulkifli','faizal','hafiz','rizal','azlan','nordin','nur','siti','noraini','farah','sarah','aisyah','aminah','fatimah','zainab','rohani','halimah','ramlah','hamidah','norliza','norzahra','hasnah','rokiah','salmah','asiah','chin','wei','ming','xin','li','ying','mei','hui','jun','yan','hong','ping','jing','zhi','qing','fang','ling','yi','chen','xian','chong','lim','tan','lee','ng','wong','chan','ong','cheah','yong','koh','goh','low','teh','poh','leong','chew','lau','foong','yeoh','ooi','lam','yap','woo','soo','wee'],last:['ahmad','ibrahim','ismail','hassan','ali','omar','rahman','rahim','aziz','hussein','abdullah','yusof','mohd','razak','tan','lim','lee','ng','wong','chan','ong','cheah','yong','koh','goh','low','teh','poh','leong','chew','lau','foong','yeoh','ooi','lam','yap','woo','soo','wee','krishnan','kumar','muthu','raja','rajan','selvam','nair','pillai','menon','subramaniam','nadarajan','arumugam','murugasen','shanmugam','suppiah','ponnusamy','velayutham'],styles:['name_num','word_combo','init_num','name_sep','nickname']},  
+  ru:{flag:'🇷🇺',name:'Russia',first:['alexander','alexei','dmitri','ivan','mikhail','nikolai','sergei','vladimir','andrei','pavel','boris','viktor','konstantin','georgiy','evgeny','maxim','artem','ilya','roman','timur','igor','oleg','valentin','anatoly','arkady','gennady','leonid','stanislav','vyacheslav','yuri','anna','elena','natasha','olga','tatiana','irina','svetlana','marina','oksana','galina','liudmila','valentina','yelena','anastasia','ekaterina','daria','polina','alena','yulia','maria','xenia','vika','katya','sasha','masha','lena','tanya','ira','nadya','sonya','vera','nadia','larisa','inna','zoya','rosa','raisa','tamara','antonina','nina','varya','luba','valia','nona','zina','mila','lida','zhanna','alla','aza'],last:['ivanov','smirnov','kuznetsov','popov','vasiliev','petrov','sokolov','mikhailov','novikov','fedorov','morozov','volkov','alekseev','lebedev','semenov','egorov','pavlov','kozlov','stepanov','nikolaev','orlov','andreev','makarov','nikitin','zakharov','zaytsev','solovyev','borisov','yakovlev','grigoriev','romanov','vorobyev','sidorov','medvedev','rogov','osipov','terentyev','frolov','baranov','davydov','tikhonov','konovalov','poliakov','afanasiev','sobolev','denisov','drozdov','panfilov','morozova','volkova','novikova','fedorova','sokolova','petrova','ivanova','smirnova','kuznetsova','popova','vasileva','alekseeva','lebedeva','semyonova','yegorova','pavlova','kozlova','stepanova'],styles:['name_sep','init_num','name_num','word_combo']}  
+};  
+  
+const WORDS=['green','blue','red','dark','bright','cool','fast','wild','lone','sky','sun','moon','star','fire','ice','storm','rain','wind','snow','night','dawn','dusk','cyber','neon','ultra','mega','super','hyper','turbo','alpha','beta','delta','sigma','prime','elite','max','pro','ace','gold','iron','steel','silver','crystal','diamond','cosmic','atomic','solar','lunar','stellar','nova','echo','phantom','shadow','ghost','blade','thunder','lightning','flash','speed','drift','cruise','glide','surf','wave','tide','peak','ridge','cliff','valley','river','ocean','lake','forest','jungle','desert','arctic','tropic','zenith','apex','core','hub','pulse','surge','boost','spark','glow','shine','blaze','frost','mist','cloud','stream','rush','burst','brave','swift','sharp','bold','keen','free','deep','wide','high','long','strong'];  
+const SUFFIXES_NUM=['1','2','3','4','5','7','8','9','10','11','12','13','21','22','23','24','25','42','52','55','64','66','72','75','77','78','80','82','83','84','85','86','87','88','89','90','91','92','93','94','95','96','97','98','99','100','123','125','143','200','321','007','365','247','101','786','452','911','2000','2001','2002','2003','2004','2005'];  
+const COUNTRY_KEYS=Object.keys(COUNTRIES);  
+let activeDomains=new Set(DOMAINS);  
+let activeCountries=new Set(COUNTRY_KEYS);  
+let generatedEmails=[];  
+let learnedPatterns={types:{},separators:{},suffixRates:0,wordPool:new Set()};  
+  
+function buildCountriesGrid(){  
+  const grid=document.getElementById('countriesGrid');  
+  grid.innerHTML='';  
+  COUNTRY_KEYS.forEach(k=>{  
+    const c=COUNTRIES[k];  
+    const chip=document.createElement('label');  
+    chip.className='country-chip active';  
+    chip.dataset.key=k;  
+    chip.innerHTML=`<input type="checkbox" checked><div class="ck"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3.5 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="cflag">${c.flag}</span><span class="cname">${c.name}</span>`;  
+    chip.querySelector('input').addEventListener('change',e=>{  
+      chip.classList.toggle('active',e.target.checked);  
+      if(e.target.checked) activeCountries.add(k); else activeCountries.delete(k);  
+      updateStats(); updateDistRow();  
+    });  
+    grid.appendChild(chip);  
+  });  
+  updateDistRow();  
+}  
+  
+function buildDomainsGrid(){  
+  const grid=document.getElementById('domainsGrid');  
+  grid.innerHTML='';  
+  DOMAINS.forEach(d=>{  
+    const chip=document.createElement('label');  
+    chip.className='domain-chip active';  
+    chip.innerHTML=`<input type="checkbox" checked><div class="ck"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3.5 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="dname">${d}</span>`;  
+    chip.querySelector('input').addEventListener('change',e=>{  
+      chip.classList.toggle('active',e.target.checked);  
+      if(e.target.checked) activeDomains.add(d); else activeDomains.delete(d);  
+      updateStats();  
+    });  
+    grid.appendChild(chip);  
+  });  
+}  
+  
+function updateDistRow(){  
+  const row=document.getElementById('distRow');  
+  if(!activeCountries.size){row.innerHTML='';return;}  
+  const perC=Math.floor(100/activeCountries.size);  
+  row.innerHTML=[...activeCountries].map(k=>`<span class="dist-pill">${COUNTRIES[k].flag} ${COUNTRIES[k].name} ~${perC}%</span>`).join('');  
+}  
+  
+function selectAllCountries(){document.querySelectorAll('.country-chip').forEach(chip=>{chip.classList.add('active');chip.querySelector('input').checked=true;activeCountries.add(chip.dataset.key);});updateStats();updateDistRow();}  
+function clearAllCountries(){document.querySelectorAll('.country-chip').forEach(chip=>{chip.classList.remove('active');chip.querySelector('input').checked=false;activeCountries.delete(chip.dataset.key);});updateStats();updateDistRow();}  
+function selectAllDomains(){document.querySelectorAll('.domain-chip').forEach((chip,i)=>{chip.classList.add('active');chip.querySelector('input').checked=true;activeDomains.add(DOMAINS[i]);});updateStats();}  
+function clearAllDomains(){document.querySelectorAll('.domain-chip').forEach((chip,i)=>{chip.classList.remove('active');chip.querySelector('input').checked=false;activeDomains.delete(DOMAINS[i]);});updateStats();}  
+function setCount(n){document.getElementById('countInput').value=n;}  
+  
+function parseEmails(txt){return txt.split(/[\n,;]+/).map(e=>e.trim().toLowerCase()).filter(e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));}  
+  
+function classifyUsername(u){  
+  if(/^[a-z]+[._-][a-z]+\d*$/.test(u)) return 'name_sep';  
+  if(/^[a-z]{2,12}\d{2,6}$/.test(u)) return 'name_num';  
+  if(/^[a-z]{1,3}\d{2,6}$/.test(u)) return 'init_num';  
+  if(/^[a-z_.-]{5,20}$/.test(u)) return 'word_combo';  
+  if(/^[a-z]+[._-][a-z0-9]+$/.test(u)) return 'word_combo';  
+  return 'creative';  
+}  
+  
+function analyzeSeed(){  
+  const raw=document.getElementById('seedInput').value;  
+  const emails=parseEmails(raw);  
+  document.getElementById('seedCount').textContent=`${emails.length} emails detected`;  
+  document.getElementById('stSeed').textContent=emails.length;  
+  if(!emails.length) return;  
+  const types={},seps={'':0,'.':0,'_':0,'-':0};  
+  let hasSuffix=0;  
+  const wordPool=new Set();  
+  emails.forEach(email=>{  
+    const u=email.split('@')[0];  
+    const t=classifyUsername(u);  
+    types[t]=(types[t]||0)+1;  
+    ['.','-','_'].forEach(s=>{if(u.includes(s)) seps[s]++;});  
+    if(!u.includes('.')&&!u.includes('_')&&!u.includes('-')) seps['']++;  
+    if(/\d/.test(u)) hasSuffix++;  
+    u.replace(/[^a-z]/g,' ').split(' ').filter(w=>w.length>2).forEach(w=>wordPool.add(w));  
+  });  
+  learnedPatterns={types,separators:seps,suffixRates:hasSuffix/emails.length,wordPool};  
+  const pc=Object.keys(types).length;  
+  document.getElementById('stPatterns').textContent=pc;  
+  showToast(`Analyzed ${emails.length} emails — ${pc} pattern types found`);  
+}  
+  
+function pickWeighted(obj){  
+  const total=Object.values(obj).reduce((a,b)=>a+b,0);  
+  if(!total) return Object.keys(obj)[0];  
+  let r=Math.random()*total;  
+  for(const[k,v] of Object.entries(obj)){r-=v;if(r<=0) return k;}  
+  return Object.keys(obj)[0];  
+}  
+  
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}  
+function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}  
+  
+function generateUsername(mode,countryKey){  
+  const c=COUNTRIES[countryKey];  
+  const pool=(learnedPatterns.wordPool&&learnedPatterns.wordPool.size>5)?[...learnedPatterns.wordPool,...WORDS]:WORDS;  
+  const useLearnedTypes=mode==='learned'&&learnedPatterns.types&&Object.keys(learnedPatterns.types).length>0;  
+  const type=useLearnedTypes?pickWeighted(learnedPatterns.types):rand(c.styles);  
+  const addSuffix=Math.random()<(learnedPatterns.suffixRates||0.42);  
+  const sepObj=(learnedPatterns.separators&&Object.values(learnedPatterns.separators).some(v=>v>0))?learnedPatterns.separators:{'':5,'.':3,'_':3,'-':1};  
+  const sep=pickWeighted(sepObj);  
+  const suffix=addSuffix?rand(SUFFIXES_NUM):'';  
+  let u='';  
+  const fn=rand(c.first);  
+  const ln=rand(c.last);  
+  switch(type){  
+    case 'name_sep':{const s=sep||rand(['.','_','']);u=fn+s+ln+suffix;break;}  
+    case 'name_num':{u=(Math.random()>0.5?fn:ln)+randInt(10,9999);break;}  
+    case 'init_num':{const inits=fn.charAt(0)+(Math.random()>0.4?ln.charAt(0):'')+(Math.random()>0.7?rand(c.last).charAt(0):'');u=inits+randInt(100,9999);break;}  
+    case 'word_combo':{const s2=sep||rand(['.','_','-','']);u=Math.random()>0.5?rand(WORDS)+s2+rand(pool)+suffix:fn+rand(WORDS)+suffix;break;}  
+    case 'nickname':{const pats=[()=>rand(WORDS)+rand(WORDS),()=>fn+rand(WORDS)+randInt(1,99),()=>rand(WORDS)+randInt(1000,9999),()=>fn+randInt(1960,2010),()=>ln+rand(['er','ster','man','son','jr','sr','66','88','99']),()=>rand(['big','lil','mr','ms','dr','the'])+fn+suffix,()=>rand(WORDS)+'dancer',()=>rand(WORDS)+rand(['cat','dog','wolf','fox','bear','hawk']),()=>fn+rand(['az','ox','uk','ca','us','ny','la'])+randInt(10,99)];u=rand(pats)();break;}  
+    case 'creative':{const pats=[()=>rand(WORDS)+rand(WORDS),()=>fn+rand(WORDS)+randInt(1,99),()=>rand(WORDS)+randInt(1000,9999),()=>fn+randInt(1960,2008),()=>ln+rand(['man','son','er','ster']),()=>rand(['cool','big','the','mr','dr'])+ln+suffix,()=>fn+rand(['_','.'])+ln.slice(0,3)+randInt(10,99)];u=rand(pats)();break;}  
+    default:u=fn+ln+suffix;  
+  }  
+  return u.toLowerCase().replace(/[^a-z0-9._-]/g,'').replace(/[._-]{2,}/g,'_').slice(0,30);  
+}  
+  
+function updateStats(){  
+  document.getElementById('stCountries').textContent=activeCountries.size;  
+  document.getElementById('stDomains').textContent=activeDomains.size;  
+}  
+  
+async function startGeneration(){  
+  const domains=[...activeDomains];  
+  const countries=[...activeCountries];  
+  if(!domains.length){showToast('Select at least one domain',true);return;}  
+  if(!countries.length){showToast('Select at least one country',true);return;}  
+  const count=parseInt(document.getElementById('countInput').value);  
+  if(!count||count<10||count>100000){showToast('Enter a count between 10 and 100,000',true);return;}  
+  const mode=document.querySelector('input[name="mode"]:checked').value;  
+  if(mode==='learned'&&Object.keys(learnedPatterns.types).length===0){const raw=document.getElementById('seedInput').value;if(raw.trim()) analyzeSeed();}  
+  document.getElementById('generateBtn').disabled=true;  
+  document.getElementById('downloadBtn').disabled=true;  
+  document.getElementById('progressWrap').style.display='block';  
+  document.getElementById('progressBar').style.width='0%';  
+  document.getElementById('outputArea').value='';  
+  generatedEmails=[];  
+  const perDomain=Math.floor(count/domains.length);  
+  const remainder=count%domains.length;  
+  const domainQueue=[];  
+  domains.forEach((d,i)=>{const qty=perDomain+(i<remainder?1:0);for(let x=0;x<qty;x++) domainQueue.push(d);});  
+  for(let i=domainQueue.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[domainQueue[i],domainQueue[j]]=[domainQueue[j],domainQueue[i]];}  
+  const countryQueue=domainQueue.map((_,i)=>countries[i%countries.length]);  
+  const seen=new Set();  
+  const CHUNK=400;  
+  let done=0;  
+  const total=domainQueue.length;  
+  await new Promise(resolve=>{  
+    const run=()=>{  
+      const end=Math.min(done+CHUNK,total);  
+      for(let i=done;i<end;i++){  
+        let u,attempt=0;  
+        do{u=generateUsername(mode,countryQueue[i]);attempt++;}while(seen.has(u)&&attempt<15);  
+        if(!seen.has(u)){seen.add(u);generatedEmails.push(u+domainQueue[i]);}  
+      }  
+      done=end;  
+      document.getElementById('progressBar').style.width=Math.round((done/total)*100)+'%';  
+      document.getElementById('stGenerated').textContent=generatedEmails.length.toLocaleString();  
+      if(done<total) setTimeout(run,0); else resolve();  
+    };  
+    run();  
+  });  
+  document.getElementById('outputArea').value=generatedEmails.join('\n');  
+  document.getElementById('generateBtn').disabled=false;  
+  document.getElementById('downloadBtn').disabled=false;  
+  showToast(`${generatedEmails.length.toLocaleString()} unique emails generated across ${countries.length} countr${countries.length===1?'y':'ies'}`);  
+}  
+  
+function downloadOutput(){  
+  if(!generatedEmails.length) return;  
+  const blob=new Blob([generatedEmails.join('\n')],{type:'text/plain'});  
+  const a=document.createElement('a');  
+  a.href=URL.createObjectURL(blob);  
+  a.download=`ms_emails_${generatedEmails.length}_${Date.now()}.txt`;  
+  a.click();  
+  URL.revokeObjectURL(a.href);  
+  showToast('File downloaded');  
+}  
+  
+function copyOutput(){const out=document.getElementById('outputArea').value;if(!out) return;navigator.clipboard.writeText(out).then(()=>showToast('Copied to clipboard'));}  
+  
+function clearOutput(){  
+  document.getElementById('outputArea').value='';  
+  generatedEmails=[];  
+  document.getElementById('stGenerated').textContent='0';  
+  document.getElementById('downloadBtn').disabled=true;  
+  document.getElementById('progressBar').style.width='0%';  
+  document.getElementById('progressWrap').style.display='none';  
+}  
+  
+document.getElementById('seedInput').addEventListener('input',()=>{  
+  const emails=parseEmails(document.getElementById('seedInput').value);  
+  document.getElementById('seedCount').textContent=`${emails.length} emails detected`;  
+  document.getElementById('stSeed').textContent=emails.length;  
+});  
+  
+function showToast(msg,isError=false){  
+  const t=document.getElementById('toast');  
+  t.textContent=msg;  
+  t.style.borderLeftColor=isError?'var(--danger)':'var(--success)';  
+  t.classList.add('show');  
+  setTimeout(()=>t.classList.remove('show'),3200);  
+}  
+  
+buildCountriesGrid();  
+buildDomainsGrid();  
+updateStats();  
+</script>  </body>  
 </html>
