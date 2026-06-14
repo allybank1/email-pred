@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MSEmail Pro — Microsoft Email Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #080B12;
+    --surface: #0D1117;
+    --card: #111827;
+    --border: #1E2A3A;
+    --border-glow: #0078D4;
+    --accent: #0078D4;
+    --accent-soft: #1A3A5C;
+    --accent-glow: rgba(0,120,212,0.15);
+    --text: #E8EDF5;
+    --muted: #6B7A95;
+    --success: #10B981;
+    --warning: #F59E0B;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .noise {
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .glow-orb {
+    position: fixed;
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,120,212,0.08) 0%, transparent 70%);
+    top: -200px;
+    right: -100px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  header {
+    padding: 48px 0 40px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-icon {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, #0078D4, #00BCF2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  .logo-text {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+
+  .logo-text span { color: var(--accent); }
+
+  .badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-glow);
+    border: 1px solid rgba(0,120,212,0.3);
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-size: 38px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+  }
+
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, #0078D4, #00BCF2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: #2A3A50; }
+
+  .card.full { grid-column: 1 / -1; }
+
+  .card-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-label::before {
+    content: '';
+    width: 3px;
+    height: 12px;
+    background: var(--accent);
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 14px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    min-height: 200px;
+  }
+
+  textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  textarea::placeholder { color: var(--muted); }
+
+  .input-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+  }
+
+  input[type="number"] {
+    width: 140px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  input[type="number"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
+
+  .input-hint { font-size: 12px; color: var(--muted); }
+
+  .domains-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+    gap: 8px;
+  }
+
+  .domain-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .domain-chip:hover { border-color: var(--accent); background: var(--accent-glow); }
+
+  .domain-chip.active {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .domain-chip input[type="checkbox"] { display: none; }
+
+  .checkmark {
+    width: 15px;
+    height: 15px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+
+  .domain-chip.active .checkmark {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .checkmark svg { display: none; }
+  .domain-chip.active .checkmark svg { display: block; }
+
+  .domain-name {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--text);
+  }
+
+  .controls-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: 10px;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    letter-spacing: 0.1px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #0078D4, #006BBE);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(0,120,212,0.3);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #0086ED, #0078D4);
+    box-shadow: 0 6px 28px rgba(0,120,212,0.45);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 10px 18px;
+    font-size: 13px;
+  }
+
+  .btn-ghost:hover { color: var(--text); border-color: #2A3A50; }
+
+  .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .stat-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-value.blue { color: var(--accent); }
+  .stat-value.green { color: var(--success); }
+
+  .stat-label { font-size: 11px; color: var(--muted); }
+
+  .output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .output-actions { display: flex; gap: 8px; }
+
+  #outputArea {
+    min-height: 260px;
+    font-size: 11.5px;
+    line-height: 1.8;
+    color: #7DD3FC;
+  }
+
+  .progress-bar-wrap {
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #0078D4, #00BCF2);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--success);
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    color: var(--text);
+    z-index: 100;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    pointer-events: none;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  .select-all-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .tag { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+
+  @media (max-width: 680px) {
+    .grid { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    h1 { font-size: 26px; }
+    header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="glow-orb"></div>
+
+<div class="wrapper">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">✉</div>
+      <div class="logo-text">MS<span>Email</span> Pro</div>
+    </div>
+    <div class="badge">v2.0 — Generator</div>
+  </header>
+
+  <h1>Generate <em>Microsoft</em><br>Email Addresses</h1>
+  <p class="subtitle">Paste real emails to train the pattern engine. Choose your count and domains.<br>Download clean output ready for ZeroBounce verification.</p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="card-label">Seed Emails — Paste Real List</div>
+      <textarea id="seedInput" placeholder="Paste your real emails here, one per line&#10;&#10;Example:&#10;greenrainforest@msn.com&#10;skullnzilla@msn.com&#10;captain1971@hotmail.com"></textarea>
+      <div class="input-row">
+        <span class="tag" id="seedCount">0 emails detected</span>
+        <button class="btn btn-ghost" onclick="analyzeSeed()">Analyze Patterns</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Generation Settings</div>
+      <div style="margin-bottom:18px">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">How many emails to generate</div>
+        <input type="number" id="countInput" value="1000" min="10" max="100000">
+        <div class="input-hint" style="margin-top:6px">Min: 10 &nbsp;·&nbsp; Max: 100,000</div>
+      </div>
+
+      <div style="margin-bottom:8px;font-size:12px;color:var(--muted)">Quick amounts</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px">
+        <button class="btn btn-ghost" onclick="setCount(500)">500</button>
+        <button class="btn btn-ghost" onclick="setCount(1000)">1K</button>
+        <button class="btn btn-ghost" onclick="setCount(5000)">5K</button>
+        <button class="btn btn-ghost" onclick="setCount(10000)">10K</button>
+        <button class="btn btn-ghost" onclick="setCount(50000)">50K</button>
+        <button class="btn btn-ghost" onclick="setCount(100000)">100K</button>
+      </div>
+
+      <div style="background:var(--surface);border-radius:10px;padding:14px;border:1px solid var(--border)">
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px">Pattern mode</div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="radio" name="mode" value="learned" checked style="accent-color:var(--accent)"> Learn from seed emails
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px">
+            <input type="radio" name="mode" value="auto" style="accent-color:var(--accent)"> Auto (no seed needed)
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card full" style="margin-bottom:20px">
+    <div class="card-label">Microsoft Domains — Select Active</div>
+    <div class="select-all-row">
+      <button class="btn btn-ghost" onclick="selectAllDomains()">Select All</button>
+      <button class="btn btn-ghost" onclick="clearAllDomains()">Clear All</button>
+    </div>
+    <div class="domains-grid" id="domainsGrid"></div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-value blue" id="statSeed">0</div>
+      <div class="stat-label">Seed Emails</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="statPatterns">0</div>
+      <div class="stat-label">Patterns Found</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value green" id="statGenerated">0</div>
+      <div class="stat-label">Generated</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-value" id="statDomains">0</div>
+      <div class="stat-label">Domains Active</div>
+    </div>
+  </div>
+
+  <div class="controls-row">
+    <button class="btn btn-primary" id="generateBtn" onclick="startGeneration()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1v14M1 8h14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      Generate Emails
+    </button>
+    <button class="btn btn-secondary" id="downloadBtn" onclick="downloadOutput()" disabled>
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1v9M4 7l3.5 3.5L11 7M2 13h11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download .txt
+    </button>
+    <button class="btn btn-secondary" onclick="clearOutput()">Clear</button>
+  </div>
+
+  <div class="progress-bar-wrap" id="progressWrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div class="card full">
+    <div class="output-header">
+      <div class="card-label" style="margin-bottom:0">Output — Generated Emails</div>
+      <div class="output-actions">
+        <button class="btn btn-ghost" onclick="copyOutput()">Copy All</button>
+      </div>
+    </div>
+    <textarea id="outputArea" readonly placeholder="Generated emails will appear here...&#10;&#10;Tip: Paste your seed list, select domains, set count and hit Generate."></textarea>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DOMAINS = [
+  '@msn.com','@hotmail.co.uk','@live.co.uk','@hotmail.ca',
+  '@live.ca','@live.fr','@hotmail.fr','@live.de',
+  '@hotmail.de','@hotmail.it','@hotmail.es','@outlook.com',
+  '@hotmail.com','@live.com'
+];
+
+const FIRSTNAMES = ['james','john','mike','david','sarah','lisa','anna','kate','chris','paul','mark','steve','tom','bob','joe','dan','ken','ray','frank','gary','larry','jerry','terry','barry','harry','perry','henry','kenny','ronnie','donnie','connie','bonnie','lonnie','johnny','tommy','sammy','jimmy','billy','bobby','danny','benny','teddy','freddy','eddy','andy','sandy','randy','candy','mandy','brandy','wendy','cindy','mindy','lindy','judy','rudy','trudy','cody','jody','brody','brady','grady','tracy','stacy','macy','lacy','nacy','kacy','ricky','lucky','ducky','micky','nicky','vicky','sticky','tricky','rocky','cocky','blocky','snoopy','loopy','droopy','whoopi','bambi','tammy','jammy','hammy','mammy','cammy','sammy','rammy','lammy'];
+
+const LASTNAMES = ['smith','jones','brown','wilson','taylor','clark','white','lewis','lee','walker','hall','allen','young','king','wright','hill','scott','green','adams','baker','gonzalez','nelson','carter','mitchell','perez','roberts','turner','phillips','campbell','parker','evans','edwards','collins','stewart','sanchez','morris','rogers','reed','cook','morgan','bell','murphy','cox','bailey','rivera','cooper','ward','brooks','ross','wood','foster','gray','james','watson','brooks','kelly','sanders','price','james','griffin','foster','diaz','hayes','myers','ford','hamilton','graham','sullivan','wallace','woods','cole','west','jordan','owens','reynolds','fisher','ellis','harrison','gibson','mcdonald','cruz','marshall','ortiz','gomez','murray','freeman','wells','webb','simpson','stevens','tucker','porter','hunter','hicks','crawford','henry','boyd','mason','morales','kennedy','warren','dixon'];
+
+const WORDS = ['green','blue','red','dark','bright','cool','fast','wild','lone','sky','sun','moon','star','fire','ice','storm','rain','wind','snow','night','dawn','dusk','cyber','neon','ultra','mega','super','hyper','turbo','alpha','beta','delta','sigma','prime','elite','max','pro','ace','gold','iron','steel','silver','crystal','diamond','cosmic','atomic','solar','lunar','stellar','nova','echo','phantom','shadow','ghost','blade','thunder','lightning','flash','speed','drift','cruise','glide','surf','wave','tide','peak','ridge','cliff','valley','river','ocean','lake','forest','jungle','desert','arctic','tropic','zenith','apex','vertex','orbit','vector','matrix','nexus','axis','core','hub','node','link','grid','flux','pulse','surge','boost','spark','glow','shine','blaze','frost','mist','haze','fog','smoke','vapor','steam','cloud','drift','flow','stream','rush','burst'];
+
+const SEPARATORS = ['', '.', '_', '-'];
+const SUFFIXES = ['','1','2','3','4','5','7','8','9','10','11','12','13','21','22','23','24','25','42','52','55','64','66','69','72','75','77','78','80','82','83','84','85','86','87','88','89','90','91','92','93','94','95','96','97','98','99','100','123','125','143','200','2000','2001','2002','2003','2004','2005','321','007','365','247','101','786','452','911'];
+
+let generatedEmails = [];
+let learnedPatterns = { types: {}, separators: {}, suffixRates: 0, wordPool: new Set() };
+let activeDomains = new Set(DOMAINS);
+
+function buildDomainsGrid() {
+  const grid = document.getElementById('domainsGrid');
+  grid.innerHTML = '';
+  DOMAINS.forEach(d => {
+    const chip = document.createElement('label');
+    chip.className = 'domain-chip active';
+    chip.innerHTML = `<input type="checkbox" checked><div class="checkmark"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3.5L3.5 6L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="domain-name">${d}</span>`;
+    chip.querySelector('input').addEventListener('change', e => {
+      chip.classList.toggle('active', e.target.checked);
+      if (e.target.checked) activeDomains.add(d); else activeDomains.delete(d);
+      updateStats();
+    });
+    grid.appendChild(chip);
+  });
+  updateStats();
+}
+
+function selectAllDomains() {
+  document.querySelectorAll('.domain-chip').forEach((chip, i) => {
+    chip.classList.add('active');
+    chip.querySelector('input').checked = true;
+    activeDomains.add(DOMAINS[i]);
+  });
+  updateStats();
+}
+
+function clearAllDomains() {
+  document.querySelectorAll('.domain-chip').forEach((chip, i) => {
+    chip.classList.remove('active');
+    chip.querySelector('input').checked = false;
+    activeDomains.delete(DOMAINS[i]);
+  });
+  updateStats();
+}
+
+function setCount(n) {
+  document.getElementById('countInput').value = n;
+}
+
+function parseEmails(text) {
+  return text.split(/[\n,;]+/).map(e => e.trim().toLowerCase()).filter(e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));
+}
+
+function extractUsername(email) {
+  return email.split('@')[0];
+}
+
+function classifyUsername(u) {
+  if (/^[a-z]+[._-][a-z]+\d*$/.test(u)) return 'name_sep_name';
+  if (/^[a-z]{2,12}\d{2,6}$/.test(u)) return 'word_num';
+  if (/^[a-z]{1,3}\d{2,6}$/.test(u)) return 'init_num';
+  if (/^[a-z_.-]{5,20}$/.test(u)) return 'pure_word';
+  if (/^[a-z]+[._-][a-z0-9]+$/.test(u)) return 'word_sep_word';
+  return 'creative';
+}
+
+function analyzeSeed() {
+  const raw = document.getElementById('seedInput').value;
+  const emails = parseEmails(raw);
+  document.getElementById('seedCount').textContent = `${emails.length} emails detected`;
+  document.getElementById('statSeed').textContent = emails.length;
+
+  if (emails.length === 0) return;
+
+  const types = {};
+  const seps = { '': 0, '.': 0, '_': 0, '-': 0 };
+  let hasSuffix = 0;
+  const wordPool = new Set();
+
+  emails.forEach(email => {
+    const u = extractUsername(email);
+    const type = classifyUsername(u);
+    types[type] = (types[type] || 0) + 1;
+    SEPARATORS.forEach(s => { if (s && u.includes(s)) seps[s]++; else if (!s && !u.includes('.') && !u.includes('_') && !u.includes('-')) seps['']++; });
+    if (/\d/.test(u)) hasSuffix++;
+    u.replace(/[^a-z]/g, ' ').split(' ').filter(w => w.length > 2).forEach(w => wordPool.add(w));
+  });
+
+  learnedPatterns = { types, separators: seps, suffixRates: hasSuffix / emails.length, wordPool };
+  const patternCount = Object.keys(types).length;
+  document.getElementById('statPatterns').textContent = patternCount;
+  showToast(`Analyzed ${emails.length} emails — ${patternCount} pattern types found`);
+}
+
+function pickWeighted(obj) {
+  const total = Object.values(obj).reduce((a, b) => a + b, 0);
+  if (total === 0) return Object.keys(obj)[0];
+  let r = Math.random() * total;
+  for (const [k, v] of Object.entries(obj)) { r -= v; if (r <= 0) return k; }
+  return Object.keys(obj)[0];
+}
+
+function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function randNum(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+function generateUsername(mode) {
+  const pool = (learnedPatterns.wordPool && learnedPatterns.wordPool.size > 5)
+    ? [...learnedPatterns.wordPool, ...WORDS] : WORDS;
+
+  const useLearnedTypes = mode === 'learned' && learnedPatterns.types && Object.keys(learnedPatterns.types).length > 0;
+  const type = useLearnedTypes ? pickWeighted(learnedPatterns.types) : rand(['name_sep_name','word_num','pure_word','creative','word_sep_word','init_num']);
+
+  const addSuffix = Math.random() < (learnedPatterns.suffixRates || 0.4);
+  const sep = pickWeighted(learnedPatterns.separators && Object.values(learnedPatterns.separators).some(v => v > 0) ? learnedPatterns.separators : {'':5,'.':2,'_':2,'-':1});
+  const suffix = addSuffix ? rand(SUFFIXES.filter(s => s !== '')) : '';
+
+  let u = '';
+  switch (type) {
+    case 'name_sep_name': {
+      const s = sep || rand(['.','_','']);
+      u = rand(FIRSTNAMES) + s + rand(LASTNAMES) + suffix;
+      break;
+    }
+    case 'word_num': {
+      u = rand(pool) + randNum(10, 9999);
+      break;
+    }
+    case 'init_num': {
+      const initials = rand(FIRSTNAMES).charAt(0) + (Math.random() > 0.5 ? rand(LASTNAMES).charAt(0) : '') + (Math.random() > 0.6 ? rand(LASTNAMES).charAt(0) : '');
+      u = initials + randNum(100, 9999);
+      break;
+    }
+    case 'pure_word': {
+      const combo = Math.random() > 0.5 ? rand(WORDS) + rand(pool) : rand(FIRSTNAMES) + rand(LASTNAMES);
+      u = combo + suffix;
+      break;
+    }
+    case 'word_sep_word': {
+      const s2 = sep || rand(['.','_','-','']);
+      u = rand(WORDS) + s2 + rand(pool) + suffix;
+      break;
+    }
+    case 'creative': {
+      const patterns = [
+        () => rand(WORDS) + rand(WORDS),
+        () => rand(FIRSTNAMES) + rand(WORDS) + randNum(1, 99),
+        () => rand(WORDS) + randNum(1000, 9999),
+        () => rand(FIRSTNAMES) + randNum(1960, 2005),
+        () => rand(LASTNAMES) + rand(['er','ster','man','ster','son','jr','sr']),
+        () => rand(WORDS) + 'dance',
+        () => rand(['dr','mr','mrs','ms','prof']) + rand(LASTNAMES) + randNum(1, 99),
+        () => rand(FIRSTNAMES) + rand(['az','ox','uk','ca','us','ny','la']) + randNum(10, 99),
+      ];
+      u = rand(patterns)();
+      break;
+    }
+    default: u = rand(FIRSTNAMES) + rand(LASTNAMES) + suffix;
+  }
+
+  return u.toLowerCase().replace(/[^a-z0-9._-]/g, '').slice(0, 30);
+}
+
+function getActiveDomains() {
+  return [...activeDomains];
+}
+
+async function startGeneration() {
+  const domains = getActiveDomains();
+  if (domains.length === 0) { showToast('Select at least one domain first', true); return; }
+
+  const count = parseInt(document.getElementById('countInput').value);
+  if (!count || count < 10 || count > 100000) { showToast('Enter a count between 10 and 100,000', true); return; }
+
+  const mode = document.querySelector('input[name="mode"]:checked').value;
+  if (mode === 'learned' && (!learnedPatterns.types || Object.keys(learnedPatterns.types).length === 0)) {
+    const raw = document.getElementById('seedInput').value;
+    if (raw.trim()) analyzeSeed();
+  }
+
+  document.getElementById('generateBtn').disabled = true;
+  document.getElementById('downloadBtn').disabled = true;
+  document.getElementById('progressWrap').style.display = 'block';
+  document.getElementById('outputArea').value = '';
+  generatedEmails = [];
+
+  const seen = new Set();
+  const CHUNK = 500;
+  let done = 0;
+
+  const perDomain = Math.floor(count / domains.length);
+  const remainder = count % domains.length;
+  const domainQueue = [];
+  domains.forEach((d, i) => {
+    const qty = perDomain + (i < remainder ? 1 : 0);
+    for (let x = 0; x < qty; x++) domainQueue.push(d);
+  });
+  for (let i = domainQueue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [domainQueue[i], domainQueue[j]] = [domainQueue[j], domainQueue[i]];
+  }
+
+  const generate = () => new Promise(resolve => {
+    const run = () => {
+      const end = Math.min(done + CHUNK, domainQueue.length);
+      for (let i = done; i < end; i++) {
+        let u, attempt = 0;
+        do { u = generateUsername(mode); attempt++; } while (seen.has(u) && attempt < 15);
+        if (!seen.has(u)) {
+          seen.add(u);
+          generatedEmails.push(u + domainQueue[i]);
+        }
+      }
+      done = end;
+      const pct = Math.round((done / domainQueue.length) * 100);
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('statGenerated').textContent = generatedEmails.length.toLocaleString();
+
+      if (done < domainQueue.length) setTimeout(run, 0);
+      else resolve();
+    };
+    run();
+  });
+
+  await generate();
+
+  document.getElementById('outputArea').value = generatedEmails.join('\n');
+  document.getElementById('generateBtn').disabled = false;
+  document.getElementById('downloadBtn').disabled = false;
+  document.getElementById('statGenerated').textContent = generatedEmails.length.toLocaleString();
+  showToast(`${generatedEmails.length.toLocaleString()} unique emails generated`);
+}
+
+function downloadOutput() {
+  if (!generatedEmails.length) return;
+  const blob = new Blob([generatedEmails.join('\n')], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `ms_emails_${generatedEmails.length}_${Date.now()}.txt`;
+  a.click();
+  URL.revokeObjectURL(a.href);
+  showToast('File downloaded successfully');
+}
+
+function copyOutput() {
+  const out = document.getElementById('outputArea').value;
+  if (!out) return;
+  navigator.clipboard.writeText(out).then(() => showToast('Copied to clipboard'));
+}
+
+function clearOutput() {
+  document.getElementById('outputArea').value = '';
+  generatedEmails = [];
+  document.getElementById('statGenerated').textContent = '0';
+  document.getElementById('downloadBtn').disabled = true;
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('progressWrap').style.display = 'none';
+}
+
+function updateStats() {
+  document.getElementById('statDomains').textContent = activeDomains.size;
+}
+
+document.getElementById('seedInput').addEventListener('input', () => {
+  const emails = parseEmails(document.getElementById('seedInput').value);
+  document.getElementById('seedCount').textContent = `${emails.length} emails detected`;
+  document.getElementById('statSeed').textContent = emails.length;
+});
+
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.borderLeftColor = isError ? '#EF4444' : 'var(--success)';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+buildDomainsGrid();
+</script>
+</body>
+</html>
