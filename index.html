@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MSEmail Pro — Microsoft Email Generator v3.4</title>
+<title>MSEmail Pro — Microsoft Email Generator v3.5</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -119,7 +119,7 @@ input[type=number]:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--acc
     <div class="logo-icon">✉</div>
     <div class="logo-text">MS<span>Email</span> Pro</div>
   </div>
-  <div class="badge">v3.4</div>
+  <div class="badge">v3.5</div>
 </header>
 <div class="gold-divider"></div>
 <h1>Generate <em>Microsoft</em><br>Email Addresses</h1>
@@ -317,11 +317,16 @@ function setCount(n){document.getElementById('countInput').value=n;}
 function parseEmails(txt){return txt.split(/[\n,;]+/).map(e=>e.trim().toLowerCase()).filter(e=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e));}
 
 function classifyUsername(u){
-  if(/^[a-z]+[._-][a-z]+\d*$/.test(u)) return 'name_sep';
-  if(/^[a-z]{2,12}\d{2,6}$/.test(u)) return 'name_num';
-  if(/^[a-z]{1,3}\d{2,6}$/.test(u)) return 'init_num';
-  if(/^[a-z_.-]{5,20}$/.test(u)) return 'word_combo';
-  if(/^[a-z]+[._-][a-z0-9]+$/.test(u)) return 'word_combo';
+  if(/^[a-z]+\d{2,4}$/.test(u)) return 'pure_name_num';
+  if(/^[a-z]+[._-][a-z]+[._-]\d+$/.test(u)) return 'name_sep_num';
+  if(/^[a-z]{2,4}\d{2,6}$/.test(u)) return 'init_num';
+  if(/^[a-z]+[._-][a-z]+$/.test(u)) return 'name_sep';
+  if(/^[a-z]{3,12}\d{4,}$/.test(u)) return 'name_num';
+  if(/^[a-z]{1,3}[._-]?[a-z]{1,3}\d*$/.test(u)) return 'initials';
+  if(u.length <= 6 && /^[a-z]+$/.test(u)) return 'short_name';
+  if(/^[a-z]+[._-]{2,}[a-z0-9]+$/.test(u)) return 'double_sep';
+  if(/^[a-z_.-]{6,25}$/.test(u) && (u.includes('.') || u.includes('_') || u.includes('-'))) return 'word_combo';
+  if(/^[a-z]+[._-][a-z0-9-_.]+$/.test(u)) return 'word_combo';
   return 'creative';
 }
 
@@ -487,18 +492,30 @@ function generateUsername(mode,countryKey){
   }
   
   let u='';
-  if(useLearnedTypes && Math.random()<0.75){
+  if(useLearnedTypes && Math.random()<0.8){
     if(type==='name_sep'){
       const s=sep||rand(['.','_','']);
       u=fn+s+ln+suffix;
+    }else if(type==='name_sep_num'){
+      const s=sep||rand(['.','_','']);
+      u=fn+s+ln+randInt(10,99);
     }else if(type==='name_num'){
       u=(Math.random()>0.5?fn:ln)+suffix;
+    }else if(type==='pure_name_num'){
+      u=fn+ln+randInt(10,999);
     }else if(type==='init_num'){
       const inits=fn.charAt(0)+(Math.random()>0.5?ln.charAt(0):'');
       u=inits+suffix;
+    }else if(type==='initials'){
+      u=fn.charAt(0)+ln.charAt(0)+randInt(10,999);
+    }else if(type==='short_name'){
+      u=fn.slice(0,5)+ (Math.random()>0.6 ? ln.slice(0,3) : '');
+    }else if(type==='double_sep'){
+      const s=sep||rand(['.','_']);
+      u=fn+s+ln+s+randInt(10,99);
     }else if(type==='word_combo'){
       const s2=sep||rand(['.','_','-','']);
-      u=Math.random()>0.6?rand(pool)+s2+rand(pool)+suffix:fn+rand(WORDS)+suffix;
+      u=Math.random()>0.5?rand(pool)+s2+rand(pool)+suffix : fn+rand(WORDS)+suffix;
     }else{
       u=fn+ln+suffix;
     }
