@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MSEmail Pro — Microsoft Email Generator v3.3</title>
+<title>MSEmail Pro — Microsoft Email Generator v3.4</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -119,7 +119,7 @@ input[type=number]:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--acc
     <div class="logo-icon">✉</div>
     <div class="logo-text">MS<span>Email</span> Pro</div>
   </div>
-  <div class="badge">v3.3 — Old People Bias</div>
+  <div class="badge">v3.4</div>
 </header>
 <div class="gold-divider"></div>
 <h1>Generate <em>Microsoft</em><br>Email Addresses</h1>
@@ -127,7 +127,7 @@ input[type=number]:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--acc
 <div class="grid2">
   <div class="card">
     <div class="clabel">Seed Emails — Paste Real List</div>
-    <textarea id="seedInput" placeholder="Paste your real emails here, one per line&#10;&#10;greenrainforest@msn.com&#10;skullnzilla@msn.com&#10;captain1971@hotmail.com&#10;diane_weinstein@msn.com"></textarea>
+    <textarea id="seedInput" placeholder="Paste your real emails here, one per line"></textarea>
     <div style="display:flex;align-items:center;gap:10px;margin-top:10px">
       <span class="tag" id="seedCount">0 emails detected</span>
       <button class="btn btn-ghost" onclick="analyzeSeed()">Analyze Patterns</button>
@@ -458,7 +458,7 @@ function generateUsername(mode,countryKey){
     if(type === 'nickname' || type === 'creative' || type === 'word_combo') type = 'name_sep';
   }
   
-  const addSuffix=Math.random()<(isOld ? 0.75 : (learnedPatterns.suffixRates||0.42));
+  const addSuffix=Math.random()<(isOld ? 0.82 : (learnedPatterns.suffixRates||0.48));
   const sepObj=(learnedPatterns.separators&&Object.values(learnedPatterns.separators).some(v=>v>0))?learnedPatterns.separators:{'none':5,'.':3,'_':3,'-':1};
   const rawSep=pickWeighted(sepObj);
   const sep=(rawSep==='none')?'':rawSep.replace(/"/g,'').replace('−','-');
@@ -467,7 +467,7 @@ function generateUsername(mode,countryKey){
   if(addSuffix){
     if(isOld){
       suffix = rand(OLD_SUFFIXES);
-    } else if(learnedPatterns.yearWeights && Object.keys(learnedPatterns.yearWeights).length > 0 && Math.random()<0.6){
+    } else if(learnedPatterns.yearWeights && Object.keys(learnedPatterns.yearWeights).length > 0 && Math.random()<0.65){
       suffix = pickYearSuffix();
     } else {
       suffix = rand(SUFFIXES_NUM);
@@ -487,15 +487,33 @@ function generateUsername(mode,countryKey){
   }
   
   let u='';
-  switch(type){
-    case 'name_sep':{const s=sep||rand(['.','_','']);u=fn+s+ln+suffix;break;}
-    case 'name_num':{u=(Math.random()>0.5?fn:ln)+(isOld?rand(OLD_SUFFIXES):randInt(10,9999));break;}
-    case 'init_num':{const inits=fn.charAt(0)+(Math.random()>0.4?ln.charAt(0):'')+(Math.random()>0.7?rand(c.last).charAt(0):'');u=inits+(isOld?rand(OLD_SUFFIXES):randInt(100,9999));break;}
-    case 'word_combo':{const s2=sep||rand(['.','_','-','']);u=Math.random()>0.5?rand(WORDS)+s2+rand(pool)+suffix:fn+rand(WORDS)+suffix;break;}
-    case 'nickname':{const pats=[()=>rand(WORDS)+rand(WORDS),()=>fn+rand(WORDS)+randInt(1,99),()=>rand(WORDS)+randInt(1000,9999),()=>fn+randInt(1960,2010),()=>ln+rand(['er','ster','man','son','jr','sr','66','88','99']),()=>rand(['big','lil','mr','ms','dr','the'])+fn+suffix,()=>rand(WORDS)+'dancer',()=>rand(WORDS)+rand(['cat','dog','wolf','fox','bear','hawk']),()=>fn+rand(['az','ox','uk','ca','us','ny','la'])+randInt(10,99)];u=rand(pats)();break;}
-    case 'creative':{const pats=[()=>rand(WORDS)+rand(WORDS),()=>fn+rand(WORDS)+randInt(1,99),()=>rand(WORDS)+randInt(1000,9999),()=>fn+randInt(1960,2008),()=>ln+rand(['man','son','er','ster']),()=>rand(['cool','big','the','mr','dr'])+ln+suffix,()=>fn+rand(['_','.'])+ln.slice(0,3)+randInt(10,99)];u=rand(pats)();break;}
-    default:u=fn+ln+suffix;
+  if(useLearnedTypes && Math.random()<0.75){
+    if(type==='name_sep'){
+      const s=sep||rand(['.','_','']);
+      u=fn+s+ln+suffix;
+    }else if(type==='name_num'){
+      u=(Math.random()>0.5?fn:ln)+suffix;
+    }else if(type==='init_num'){
+      const inits=fn.charAt(0)+(Math.random()>0.5?ln.charAt(0):'');
+      u=inits+suffix;
+    }else if(type==='word_combo'){
+      const s2=sep||rand(['.','_','-','']);
+      u=Math.random()>0.6?rand(pool)+s2+rand(pool)+suffix:fn+rand(WORDS)+suffix;
+    }else{
+      u=fn+ln+suffix;
+    }
+  }else{
+    switch(type){
+      case 'name_sep':{const s=sep||rand(['.','_','']);u=fn+s+ln+suffix;break;}
+      case 'name_num':{u=(Math.random()>0.5?fn:ln)+(isOld?rand(OLD_SUFFIXES):randInt(10,9999));break;}
+      case 'init_num':{const inits=fn.charAt(0)+(Math.random()>0.4?ln.charAt(0):'')+(Math.random()>0.7?rand(c.last).charAt(0):'');u=inits+(isOld?rand(OLD_SUFFIXES):randInt(100,9999));break;}
+      case 'word_combo':{const s2=sep||rand(['.','_','-','']);u=Math.random()>0.5?rand(WORDS)+s2+rand(pool)+suffix:fn+rand(WORDS)+suffix;break;}
+      case 'nickname':{const pats=[()=>rand(WORDS)+rand(WORDS),()=>fn+rand(WORDS)+randInt(1,99),()=>rand(WORDS)+randInt(1000,9999),()=>fn+randInt(1960,2010),()=>ln+rand(['er','ster','man','son','jr','sr','66','88','99']),()=>rand(['big','lil','mr','ms','dr','the'])+fn+suffix,()=>rand(WORDS)+'dancer',()=>rand(WORDS)+rand(['cat','dog','wolf','fox','bear','hawk']),()=>fn+rand(['az','ox','uk','ca','us','ny','la'])+randInt(10,99)];u=rand(pats)();break;}
+      case 'creative':{const pats=[()=>rand(WORDS)+rand(WORDS),()=>fn+rand(WORDS)+randInt(1,99),()=>rand(WORDS)+randInt(1000,9999),()=>fn+randInt(1960,2008),()=>ln+rand(['man','son','er','ster']),()=>rand(['cool','big','the','mr','dr'])+ln+suffix,()=>fn+rand(['_','.'])+ln.slice(0,3)+randInt(10,99)];u=rand(pats)();break;}
+      default:u=fn+ln+suffix;
+    }
   }
+  
   u=u.toLowerCase().replace(/[^a-z0-9._-]/g,'').replace(/[._-]{2,}/g,'_');
   if(u.length<minL) u=u+rand(isOld?OLD_SUFFIXES:SUFFIXES_NUM);
   if(u.length>maxL) u=u.slice(0,maxL);
